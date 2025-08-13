@@ -1,0 +1,82 @@
+import express from 'express';
+import { PrismaClient } from '@prisma/client';
+
+const router = express.Router();
+const prisma = new PrismaClient();
+
+// 그룹 목록 조회
+router.get('/', async (req, res) => {
+  try {
+    const groups = await prisma.group.findMany();
+    res.json(groups);
+  } catch (error) {
+    console.error('GET /groups Error:', error);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+// 그룹 생성
+router.post('/', async (req, res) => {
+  try {
+    let {
+      group_name,
+      name,
+      ownerPassword,
+      description,
+      photoUrl,
+      goalRep,
+      discordWebhookUrl,
+      discordInviteUrl,
+      tags,
+      badges,
+    } = req.body;
+
+    if (group_name && !name) name = group_name;
+
+    if (!name || !ownerPassword) {
+      return res.status(400).json({ message: '필수 필드(name, ownerPassword)가 누락되었습니다.' });
+    }
+
+    // goalRep 숫자 변환
+    if (goalRep && typeof goalRep === 'string') {
+      goalRep = Number(goalRep);
+    }
+
+    // 문자열 → 배열 변환 함수
+    const parseArray = (val) => {
+      if (typeof val === 'string') {
+        try {
+          return JSON.parse(val);
+        } catch {
+          return [val];
+        }
+      }
+      if (Array.isArray(val)) return val;
+      return [];
+    };
+
+    tags = parseArray(tags);
+    badges = parseArray(badges);
+
+    const newGroup = await prisma.group.create({
+      data: {
+        name,
+        password: ownerPassword,
+        description,
+        photoUrl,
+        goalRep,
+        discordWebhookUrl,
+        discordInviteUrl,
+        tags,
+        badges,
+      },
+    });
+
+    res.status(201).json(newGroup);
+  } catch (error) {
+    console.error('POST /groups Error:', error);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+export default router;
