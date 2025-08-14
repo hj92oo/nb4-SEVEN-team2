@@ -89,7 +89,7 @@ router.post('/', async (req, res) => {
 // 그룹 수정(심)
 router
   .route('/:groupid')
-  .patch('/:groupId', checkGroupPassword, async (req, res) => {
+  .patch(checkGroupPassword, async (req, res) => {
     const groupId = parseInt(req.params.groupId);
     const {
       name,
@@ -123,7 +123,7 @@ router
     }
   })
   // 그룹 삭제(심)
-  .delete('/:groupId', checkGroupPassword, async (req, res) => {
+  .delete(checkGroupPassword, async (req, res) => {
     const groupId = parseInt(req.params.groupId);
     try {
       await prisma.group.delete({
