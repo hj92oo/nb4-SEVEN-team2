@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
       discordInviteUrl,
       tags,
       ownerNickname,
-      ownerPassword
+      ownerPassword,
     } = req.body;
 
     if (!name || !ownerPassword || !ownerNickname) {
@@ -62,14 +62,14 @@ router.post('/', async (req, res) => {
     const newGroup = await prisma.group.create({
       data: {
         name,
-        nickname : ownerNickname,
+        nickname: ownerNickname,
         password: ownerPassword,
         description,
         photoUrl,
         goalRep,
         discordWebhookUrl,
         discordInviteUrl,
-        tags
+        tags,
       },
     });
 
@@ -81,7 +81,7 @@ router.post('/', async (req, res) => {
 });
 
 router
-  .route('/:groupid')
+  .route('/:groupId')
   .patch(checkGroupPassword, async (req, res) => {
     const groupId = parseInt(req.params.groupId);
     const {

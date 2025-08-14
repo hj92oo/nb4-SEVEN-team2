@@ -1,4 +1,4 @@
-import GroupService from './GroupService.js';
+import GroupService from './group.service.js';
 
 class GroupController {
   async createGroup(req, res) {
