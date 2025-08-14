@@ -1,5 +1,6 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import { checkGroupPassword } from './auth.js';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -91,7 +92,6 @@ router
       discordWebhookUrl,
       discordInviteUrl,
       tags,
-      badges,
     } = req.body;
 
     try {
@@ -105,7 +105,6 @@ router
           discordWebhookUrl,
           discordInviteUrl,
           tags: tags || [],
-          badges: badges || [],
         },
       });
       res.status(200).json(updatedGroup);
