@@ -10,6 +10,7 @@ datasource db {
 model Group {
   id                Int       @id @default(autoincrement())
   name              String
+  nickname          String?
   password          String
   nickname          String    // 추가
   description       String?   // optional

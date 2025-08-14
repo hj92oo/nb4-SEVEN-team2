@@ -1,6 +1,5 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import { checkGroupPassword } from './auth.js';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -20,20 +19,16 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     let {
-      group_name,
       name,
-      ownerNickname, // 추가(심)
-      ownerPassword,
       description,
       photoUrl,
       goalRep,
       discordWebhookUrl,
       discordInviteUrl,
       tags,
-      badges,
+      ownerNickname,
+      ownerPassword
     } = req.body;
-
-    if (group_name && !name) name = group_name;
 
     if (!name || !ownerPassword || !ownerNickname) {
       // !ownerNickname 추가(심)
@@ -62,20 +57,18 @@ router.post('/', async (req, res) => {
     };
 
     tags = parseArray(tags);
-    badges = parseArray(badges);
 
     const newGroup = await prisma.group.create({
       data: {
         name,
+        nickname : ownerNickname,
         password: ownerPassword,
-        nickname: ownerNickname, // 추가(심)
         description,
         photoUrl,
         goalRep,
         discordWebhookUrl,
         discordInviteUrl,
-        tags,
-        badges,
+        tags
       },
     });
 
@@ -86,7 +79,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// 그룹 수정(심)
 router
   .route('/:groupid')
   .patch('/:groupId', checkGroupPassword, async (req, res) => {
