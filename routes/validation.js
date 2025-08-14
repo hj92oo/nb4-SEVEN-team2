@@ -1,5 +1,5 @@
 import express from 'express';
-import GroupController from './GroupController.js';
+import GroupController from './group.controller.js';
 import { checkGroupPassword } from './auth.js';
 import { validate } from './validation.js';
 
