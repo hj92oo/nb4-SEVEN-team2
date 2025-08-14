@@ -19,21 +19,29 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     let {
-      group_name,
       name,
-      ownerPassword,
       description,
       photoUrl,
       goalRep,
       discordWebhookUrl,
       discordInviteUrl,
       tags,
-      badges,
+      ownerNickname,
+      ownerPassword
     } = req.body;
 
-    if (group_name && !name) name = group_name;
+    
+    console.log(`1 : ${name}`)
+    console.log(`2 : ${description}`)
+    console.log(`3 : ${photoUrl}`)
+    console.log(`4 : ${goalRep}`)
+    console.log(`5 : ${discordWebhookUrl}`)
+    console.log(`6 : ${discordInviteUrl}`)
+    console.log(`7 : ${tags}`)
+    console.log(`8 : ${ownerNickname}`)
+    console.log(`9 : ${ownerPassword}`)
 
-    if (!name || !ownerPassword) {
+    if (!ownerNickname || !ownerPassword) {
       return res.status(400).json({ message: '필수 필드(name, ownerPassword)가 누락되었습니다.' });
     }
 
@@ -56,19 +64,18 @@ router.post('/', async (req, res) => {
     };
 
     tags = parseArray(tags);
-    badges = parseArray(badges);
 
     const newGroup = await prisma.group.create({
       data: {
         name,
+        nickname : ownerNickname,
         password: ownerPassword,
         description,
         photoUrl,
         goalRep,
         discordWebhookUrl,
         discordInviteUrl,
-        tags,
-        badges,
+        tags
       },
     });
 
