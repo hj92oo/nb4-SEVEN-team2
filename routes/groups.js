@@ -1,5 +1,6 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import { checkGroupPassword } from './auth.js';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -27,7 +28,7 @@ router.post('/', async (req, res) => {
       discordInviteUrl,
       tags,
       ownerNickname,
-      ownerPassword
+      ownerPassword,
     } = req.body;
 
     if (!name || !ownerPassword || !ownerNickname) {
@@ -61,14 +62,14 @@ router.post('/', async (req, res) => {
     const newGroup = await prisma.group.create({
       data: {
         name,
-        nickname : ownerNickname,
+        nickname: ownerNickname,
         password: ownerPassword,
         description,
         photoUrl,
         goalRep,
         discordWebhookUrl,
         discordInviteUrl,
-        tags
+        tags,
       },
     });
 
@@ -80,8 +81,8 @@ router.post('/', async (req, res) => {
 });
 
 router
-  .route('/:groupid')
-  .patch('/:groupId', checkGroupPassword, async (req, res) => {
+  .route('/:groupId')
+  .patch(checkGroupPassword, async (req, res) => {
     const groupId = parseInt(req.params.groupId);
     const {
       name,
@@ -91,7 +92,6 @@ router
       discordWebhookUrl,
       discordInviteUrl,
       tags,
-      badges,
     } = req.body;
 
     try {
@@ -105,7 +105,6 @@ router
           discordWebhookUrl,
           discordInviteUrl,
           tags: tags || [],
-          badges: badges || [],
         },
       });
       res.status(200).json(updatedGroup);
@@ -115,7 +114,7 @@ router
     }
   })
   // 그룹 삭제(심)
-  .delete('/:groupId', checkGroupPassword, async (req, res) => {
+  .delete(checkGroupPassword, async (req, res) => {
     const groupId = parseInt(req.params.groupId);
     try {
       await prisma.group.delete({
