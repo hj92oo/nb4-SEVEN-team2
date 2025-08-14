@@ -30,17 +30,6 @@ router.post('/', async (req, res) => {
       ownerPassword
     } = req.body;
 
-    
-    console.log(`1 : ${name}`)
-    console.log(`2 : ${description}`)
-    console.log(`3 : ${photoUrl}`)
-    console.log(`4 : ${goalRep}`)
-    console.log(`5 : ${discordWebhookUrl}`)
-    console.log(`6 : ${discordInviteUrl}`)
-    console.log(`7 : ${tags}`)
-    console.log(`8 : ${ownerNickname}`)
-    console.log(`9 : ${ownerPassword}`)
-
     if (!ownerNickname || !ownerPassword) {
       return res.status(400).json({ message: '필수 필드(name, ownerPassword)가 누락되었습니다.' });
     }
