@@ -30,8 +30,12 @@ router.post('/', async (req, res) => {
       ownerPassword
     } = req.body;
 
-    if (!ownerNickname || !ownerPassword) {
-      return res.status(400).json({ message: '필수 필드(name, ownerPassword)가 누락되었습니다.' });
+    if (!name || !ownerPassword || !ownerNickname) {
+      // !ownerNickname 추가(심)
+      return res.status(400).json({
+        message:
+          '필수 필드(name, ownerNickname, ownerPassword)가 누락되었습니다.',
+      });
     }
 
     // goalRep 숫자 변환
@@ -74,5 +78,54 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: '서버 오류가 발생했습니다.' });
   }
 });
+
+router
+  .route('/:groupid')
+  .patch('/:groupId', checkGroupPassword, async (req, res) => {
+    const groupId = parseInt(req.params.groupId);
+    const {
+      name,
+      description,
+      photoUrl,
+      goalRep,
+      discordWebhookUrl,
+      discordInviteUrl,
+      tags,
+      badges,
+    } = req.body;
+
+    try {
+      const updatedGroup = await prisma.group.update({
+        where: { id: groupId },
+        data: {
+          name,
+          description,
+          photoUrl,
+          goalRep,
+          discordWebhookUrl,
+          discordInviteUrl,
+          tags: tags || [],
+          badges: badges || [],
+        },
+      });
+      res.status(200).json(updatedGroup);
+    } catch (error) {
+      console.error('PATCH /groups Error:', error);
+      res.status(400).json({ message: '그룹 수정에 실패했습니다.' });
+    }
+  })
+  // 그룹 삭제(심)
+  .delete('/:groupId', checkGroupPassword, async (req, res) => {
+    const groupId = parseInt(req.params.groupId);
+    try {
+      await prisma.group.delete({
+        where: { id: groupId },
+      });
+      res.status(200).json();
+    } catch (error) {
+      console.error('DELATE /groups Error:', error);
+      res.status(500).json({ message: '그룹 삭제에 실패했습니다.' });
+    }
+  });
 
 export default router;
