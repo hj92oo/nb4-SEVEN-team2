@@ -127,4 +127,17 @@ router
     }
   });
 
+router.post('/:groupId/likes', async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const updated = await prisma.group.update({
+      where: { id: parseInt(groupId) },
+      data: { likeCount: { increment: 1 } },
+    });
+    res.json({ likeCount: updated.likeCount });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;

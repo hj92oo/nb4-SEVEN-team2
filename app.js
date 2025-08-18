@@ -3,7 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import groupRoutes from './routes/groups.js';
+import groupRoutes from './routes/group-router.js';
 import imageRoutes from './routes/images.js';
 
 const app = express();
@@ -14,10 +14,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // CORS 설정
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
 
 app.use(express.json({ limit: '10mb' }));
 
