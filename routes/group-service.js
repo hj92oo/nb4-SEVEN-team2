@@ -30,7 +30,7 @@ class GroupService {
   }
 
   async getGroupById(groupId) {
-    const group = await prisma.group.findFirstOrThrow ({
+    const group = await prisma.group.findUniqueOrThrow ({
       where: { id: group },
       select: {
         name: true,
