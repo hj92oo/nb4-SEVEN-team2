@@ -52,6 +52,21 @@ class GroupService {
     });
     return groups;
   }
+
+  async getGroupById(groupId) {
+    const group = await prisma.group.findUniqueOrThrow ({
+      where: { id: groupId },
+      select: {
+        name: true,
+        description: true,
+        nickname: true,
+        photoUrl: true,
+        tags: true,
+        discordInviteUrl: true, // 참여자수 추가하기
+      },
+    })
+    return group
+  }
 }
 
 export default new GroupService();

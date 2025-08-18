@@ -8,4 +8,8 @@ router
     .route('/')
     .get(groupController.getGroupList)
 
+router    
+    .route('/:groupId')
+    .get(groupController.getGroupById)
+
 export default router;
