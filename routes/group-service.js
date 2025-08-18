@@ -28,6 +28,21 @@ class GroupService {
     });
     return;
   }
+
+  async getGroupById(groupId) {
+    const group = await prisma.group.findFirstOrThrow ({
+      where: { id: group },
+      select: {
+        name: true,
+        description: true,
+        nickname: true,
+        photoUrl: true,
+        tags: true,
+        discordInviteUrl: true, // 참여자수 추가하기
+      },
+    })
+    return group
+  }
 }
 
 export default new GroupService();
