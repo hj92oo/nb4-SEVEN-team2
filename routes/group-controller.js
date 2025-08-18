@@ -32,6 +32,17 @@ class GroupController {
       res.status(500).json({ message: '그룹 삭제에 실패했습니다.' });
     }
   }
+
+  async getGroupList(req, res) {
+    const { offset, limit, order, search } = req.query;
+    try {
+      const result = await GroupService.getGroupList(offset, limit, order, search);
+      res.status(200).json(result);
+    } catch (error) {
+      console.error('GroupController.getGroupList Error:', error);
+      res.status(500).json({ message: '그룹 목록 조회에 실패했습니다.' });
+    }
+  }
 }
 
 export default new GroupController();

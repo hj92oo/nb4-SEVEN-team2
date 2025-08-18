@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 
 // 그룹 목록 조회
 
+/*
 router.get('/', async (req, res) => {
   try {
     const groups = await prisma.group.findMany();
@@ -17,9 +18,11 @@ router.get('/', async (req, res) => {
   }
 });
 
-/* router.get('/', async (req, res) => {
+*/
+
+ router.get('/', async (req, res) => {
   try {
-  const { offset = '0', limit = '10', order = 'newest', search } = req.query;
+  const { offset = '0', limit = '3', order = 'newest', search } = req.query;
   let orderBy;
   switch (order) {
     case 'oldest':
@@ -30,7 +33,9 @@ router.get('/', async (req, res) => {
       orderBy = {createdAt: 'desc'};
   }
   const where = search ? {
-    [{ name: { contains: String(search), mode: 'insensitive' } }]
+    OR: [
+      { name: { contains: String(search), mode: 'insensitive' } }
+    ]
   } : {};
   const groups = await prisma.group.findMany({
     where,
@@ -45,7 +50,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-*/
+
 
 // 그룹 생성
 router.post('/', async (req, res) => {

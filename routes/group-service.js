@@ -28,6 +28,30 @@ class GroupService {
     });
     return;
   }
+
+  async getGroupList(offset = 0, limit = 3, order = 'newest', search) {
+    let orderBy;
+    switch (order) {
+      case 'oldest':
+        orderBy = { createdAt: 'asc' };
+        break;
+      case 'newest':
+      default:
+        orderBy = { createdAt: 'desc' };
+    }
+    const where = search ? {
+      OR: [
+        { name: { contains: String(search), mode: 'insensitive' } }
+      ]
+    } : {};
+    const groups = await prisma.group.findMany({
+      where,
+      orderBy,
+      skip: Number(offset),
+      take: Number(limit),
+    });
+    return groups;
+  }
 }
 
 export default new GroupService();
