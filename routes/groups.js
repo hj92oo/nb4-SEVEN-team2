@@ -40,8 +40,8 @@ router.get('/', async (req, res) => {
   const groups = await prisma.group.findMany({
     where,
     orderBy,
-    skip: Number(offset),
-    take: Number(limit),
+    skip: parseInt(offset),
+    take: parseInt(limit),
   });
   res.json(groups);
 } catch (error) {
@@ -49,8 +49,6 @@ router.get('/', async (req, res) => {
   res.status(500).json({ message: '서버 오류가 발생했습니다.' });
   }
 });
-
-
 
 // 그룹 생성
 router.post('/', async (req, res) => {
@@ -77,7 +75,7 @@ router.post('/', async (req, res) => {
 
     // goalRep 숫자 변환
     if (goalRep && typeof goalRep === 'string') {
-      goalRep = Number(goalRep);
+      goalRep = parseInt(goalRep);
     }
 
     // 문자열 → 배열 변환 함수

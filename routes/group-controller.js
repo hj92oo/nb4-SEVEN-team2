@@ -1,7 +1,6 @@
 import GroupService from './group.service.js';
 
-class GroupController {
-  async createGroup(req, res) {
+export async function createGroup(req, res) {
     try {
       const newGroup = await GroupService.createGroup(req.body);
       res.status(201).json(newGroup);
@@ -11,7 +10,7 @@ class GroupController {
     }
   }
 
-  async updateGroup(req, res) {
+export async function updateGroup(req, res) {
     const groupId = parseInt(req.params.groupId);
     try {
       const updatedGroup = await GroupService.updateGroup(groupId, req.body);
@@ -22,7 +21,7 @@ class GroupController {
     }
   }
 
-  async deleteGroup(req, res) {
+export async function deleteGroup(req, res) {
     const groupId = parseInt(req.params.groupId);
     try {
       const result = await GroupService.deleteGroup(groupId);
@@ -33,7 +32,7 @@ class GroupController {
     }
   }
 
-  async getGroupList(req, res) {
+export async function getGroupList(req, res) {
     const { offset, limit, order, search } = req.query;
     try {
       const result = await GroupService.getGroupList(offset, limit, order, search);
@@ -44,7 +43,7 @@ class GroupController {
     }
   }
 
-  async getGroupById(req, res) {
+export async function getGroupById(req, res) {
     const groupId = parseInt(req.params.groupId);
     try {
       const group = await GroupService.getGroupById(groupId);
@@ -54,6 +53,3 @@ class GroupController {
       res.status(404).json({ message: 'Group not found' });
     }
   }
-}
-
-export default new GroupController();

@@ -47,8 +47,8 @@ class GroupService {
     const groups = await prisma.group.findMany({
       where,
       orderBy,
-      skip: Number(offset),
-      take: Number(limit),
+      skip: parseInt(offset),
+      take: parseInt(limit),
     });
     return groups;
   }
