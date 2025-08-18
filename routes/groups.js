@@ -6,6 +6,8 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 // 그룹 목록 조회
+
+/*
 router.get('/', async (req, res) => {
   try {
     const groups = await prisma.group.findMany();
@@ -13,6 +15,38 @@ router.get('/', async (req, res) => {
   } catch (error) {
     console.error('GET /groups Error:', error);
     res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+*/
+
+ router.get('/', async (req, res) => {
+  try {
+  const { offset = '0', limit = '3', order = 'newest', search } = req.query;
+  let orderBy;
+  switch (order) {
+    case 'oldest':
+      orderBy = { createdAt: 'asc' };
+      break;
+    case 'newest':
+    default:
+      orderBy = {createdAt: 'desc'};
+  }
+  const where = search ? {
+    OR: [
+      { name: { contains: String(search), mode: 'insensitive' } }
+    ]
+  } : {};
+  const groups = await prisma.group.findMany({
+    where,
+    orderBy,
+    skip: parseInt(offset),
+    take: parseInt(limit),
+  });
+  res.json(groups);
+} catch (error) {
+  console.error('GET /groups Error:', error);
+  res.status(500).json({ message: '서버 오류가 발생했습니다.' });
   }
 });
 
@@ -41,7 +75,7 @@ router.post('/', async (req, res) => {
 
     // goalRep 숫자 변환
     if (goalRep && typeof goalRep === 'string') {
-      goalRep = Number(goalRep);
+      goalRep = parseInt(goalRep);
     }
 
     // 문자열 → 배열 변환 함수
