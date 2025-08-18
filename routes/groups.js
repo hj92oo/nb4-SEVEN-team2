@@ -113,6 +113,29 @@ router
       res.status(400).json({ message: '그룹 수정에 실패했습니다.' });
     }
   })
+
+  // 그룹 상세 조회
+  .get(async (req, res) => {
+    const groupId = parseInt(req.params.groupId) 
+    try {
+      const group = await prisma.group.findUniqueOrThrow({
+        where : { id: groupId },
+        select: {
+          name: true,
+          description: true,
+          nickname: true,
+          photoUrl: true,
+          tags: true, 
+          discordInviteUrl: true, // 참여자수는 어떻게...해야 할까요.....
+        }
+      })
+      res.status(200).json(group)
+    } catch (error) {
+      console.error('GET /groups Error', error)
+      res.status(404).json( { message: 'Group not found' })
+    }
+  })
+
   // 그룹 삭제(심)
   .delete(checkGroupPassword, async (req, res) => {
     const groupId = parseInt(req.params.groupId);
