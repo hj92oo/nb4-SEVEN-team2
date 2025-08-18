@@ -12,10 +12,8 @@ export async function createGroup(req, res) {
 
 export async function getGroupList(req, res) {
   try {
-    const { offset, limit, order, search } = req.query; // 쿼리 파라미터로 받기
+    const { offset, limit, order, search } = req.query;
     const groups = await GroupService.getGroupList(
-      // Number(offset),
-      // Number(limit),
       Number.isNaN(Number(offset)) ? 0 : Number(offset),
       Number.isNaN(Number(limit)) ? 3 : Number(limit),
       order,
@@ -24,13 +22,13 @@ export async function getGroupList(req, res) {
     res.status(200).json(groups);
   } catch (error) {
     console.error('GroupController.getGroupList Error:', error);
-    res.status(500).json({ message: '그룹 목록 조회에 실패했습니다.' });
+    res.status(404).json({ message: '그룹 목록 조회에 실패했습니다.' });
   }
 }
 
 export async function getGroupById(req, res) {
   try {
-    const groupId = parseInt(req.params.groupId); // URL 파라미터로 받기
+    const groupId = parseInt(req.params.groupId);
     const group = await GroupService.getGroupById(groupId);
     res.status(200).json(group);
   } catch (error) {

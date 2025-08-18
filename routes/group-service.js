@@ -10,15 +10,18 @@ export const createGroup = async (data) => {
 export const getGroupList = async (
   offset = 0,
   limit = 3,
-  order = 'newest',
+  order = 'createdAt',
   search
 ) => {
   let orderBy;
   switch (order) {
-    case 'oldest':
-      orderBy = { createdAt: 'asc' };
+    case 'likeCount':
+      orderBy = { likeCount: 'desc' };
       break;
-    case 'newest':
+    case 'participantCount':
+      orderBy = { participantCount: 'desc' };
+      break;
+    case 'createdAt':
     default:
       orderBy = { createdAt: 'desc' };
   }
@@ -48,6 +51,7 @@ export const getGroupById = async (groupId) => {
       nickname: true,
       photoUrl: true,
       tags: true,
+      goalRep: true,
       discordInviteUrl: true,
     },
   });
@@ -70,11 +74,11 @@ export const deleteGroup = async (groupId) => {
 };
 
 export const likeGroup = async (groupId) => {
-  const addLike = await prisma.group.update({
+  const incremented = await prisma.group.update({
     where: { id: groupId },
     data: { likeCount: { increment: 1 } },
   });
-  return addLike;
+  return incremented;
 };
 
 export const unlikeGroup = async (groupId) => {
