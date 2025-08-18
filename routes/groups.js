@@ -6,6 +6,7 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 // 그룹 목록 조회
+
 router.get('/', async (req, res) => {
   try {
     const groups = await prisma.group.findMany();
@@ -15,6 +16,36 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: '서버 오류가 발생했습니다.' });
   }
 });
+
+/* router.get('/', async (req, res) => {
+  try {
+  const { offset = '0', limit = '10', order = 'newest', search } = req.query;
+  let orderBy;
+  switch (order) {
+    case 'oldest':
+      orderBy = { createdAt: 'asc' };
+      break;
+    case 'newest':
+    default:
+      orderBy = {createdAt: 'desc'};
+  }
+  const where = search ? {
+    [{ name: { contains: String(search), mode: 'insensitive' } }]
+  } : {};
+  const groups = await prisma.group.findMany({
+    where,
+    orderBy,
+    skip: Number(offset),
+    take: Number(limit),
+  });
+  res.json(groups);
+} catch (error) {
+  console.error('GET /groups Error:', error);
+  res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+  }
+});
+
+*/
 
 // 그룹 생성
 router.post('/', async (req, res) => {
