@@ -32,6 +32,17 @@ class GroupController {
       res.status(500).json({ message: '그룹 삭제에 실패했습니다.' });
     }
   }
+
+  async getGroupById(req, res) {
+    const groupId = parseInt(req.params.groupId);
+    try {
+      const group = await GroupService.getGroupById(groupId);
+      res.status(200).json(group);
+    } catch (error) {
+      console.error('GET /groups Error:', error);
+      res.status(404).json({ message: 'Group not found' });
+    }
+  }
 }
 
 export default new GroupController();
