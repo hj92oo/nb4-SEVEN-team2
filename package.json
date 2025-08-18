@@ -5,7 +5,8 @@
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "multer": "^2.0.2",
-    "node": "^22.18.0"
+    "node": "^22.18.0",
+    "zod": "^4.0.17"
   },
   "name": "part2_team2_basic_project",
   "version": "1.0.0",
