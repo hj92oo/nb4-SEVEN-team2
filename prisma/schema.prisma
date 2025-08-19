@@ -16,10 +16,9 @@ model Group {
   password             String
   tags                 String[]     @default([])   
   goalRep              Int
-  target_count         Int?
   discord_webhook_url  String?
   discord_invite_url   String?
-  recommendation_count Int          @default(0)
+  exercise_count Int          @default(0)
   total                Int?
   likeCount            Int?         @default(0)
   badges               Badges[]     @default([])
@@ -34,7 +33,6 @@ model Group {
 model GroupUser {
   participant_id     Int        @id @default(autoincrement())
   group_id           Int
-  participant_count  Int        @default(0)
   nickname           String
   password           String
   created_at         DateTime   @default(now())

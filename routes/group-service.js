@@ -12,7 +12,6 @@ export const createGroup = async (data) => {
       description: data.description || null,
       image_url: data.photoUrl || null,
       goalRep: data.goalRep,
-      target_count: data.targetCount || null,
       discord_webhook_url: data.discordWebhookUrl || null,
       discord_invite_url: data.discordInviteUrl || null,
       tags: data.tags || [],
@@ -47,7 +46,7 @@ export const getGroupList = async (
 
   const where = search
     ? {
-        OR: [{ name: { contains: String(search), mode: 'insensitive' } }],
+        OR: [{ group_name: { contains: String(search), mode: 'insensitive' } }],
       }
     : {};
 
@@ -87,7 +86,6 @@ export const updateGroup = async (groupId, data) => {
       description: data.description || null,
       image_url: data.photoUrl || null,
       goalRep: data.goalRep,
-      target_count: data.targetCount || null,
       discord_webhook_url: data.discordWebhookUrl || null,
       discord_invite_url: data.discordInviteUrl || null,
       tags: data.tags || [],
@@ -112,7 +110,7 @@ export const likeGroup = async (groupId) => {
 
 export const unlikeGroup = async (groupId) => {
   const decremented = await prisma.group.update({
-    where: { id: groupId },
+    where: { group_id: groupId },
     data: { likeCount: { decrement: 1 } },
   });
   return decremented;
@@ -129,6 +127,16 @@ export const checkAndAwardBadges = async (groupId) => {
       data: {
         badges: {
           push: Badges.LIKE_100,
+        },
+      },
+    });
+  } else if (group.likeCount < 100 && group.badges.includes(Badges.LIKE_100)) {
+    await prisma.group.update({
+      where: { group_id: groupId },
+      data: {
+        badges: {
+          // 뱃지 제거
+          set: group.badges.filter((badge) => badge !== Badges.LIKE_100),
         },
       },
     });
