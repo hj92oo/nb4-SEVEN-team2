@@ -7,21 +7,29 @@ import {
   deleteGroup,
   likeGroup,
   unlikeGroup,
+  getRecords,
 } from './group-controller.js';
 import { checkGroupPassword } from './auth.js';
-import { validateGroup } from './validation.js';
+import { createandupdateGroupSchema } from './validation.js'
+import { validateZod } from '../middlewares/validateZod.js'
 
 const router = express.Router();
 
 // 그룹 생성 라우터
-router.route('/').post(validateGroup, createGroup).get(getGroupList);
+router.route('/').post(validateZod(createandupdateGroupSchema) , createGroup).get(getGroupList);
+
+
 
 // 그룹 수정 라우터
 router
   .route('/:groupId')
   .get(getGroupById)
-  .patch(checkGroupPassword, validateGroup, updateGroup)
+  .patch(checkGroupPassword, validateZod(createandupdateGroupSchema), updateGroup)
   .delete(checkGroupPassword, deleteGroup);
+
+router
+  .route('/:groupId/records')
+  .get(getRecords)
 
 router.route('/:groupId/likes').post(likeGroup).delete(unlikeGroup);
 
