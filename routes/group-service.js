@@ -1,0 +1,208 @@
+import { PrismaClient } from '@prisma/client';
+import { Badges } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+export const createGroup = async (data) => {
+  const newGroup = await prisma.group.create({
+    data: {
+      group_name: data.name,
+      nickname: data.ownerNickname,
+      password: data.ownerPassword,
+      description: data.description || null,
+      image_url: data.photoUrl || null,
+      goalRep: data.goalRep,
+      discord_webhook_url: data.discordWebhookUrl || null,
+      discord_invite_url: data.discordInviteUrl || null,
+      tags: data.tags || [],
+    },
+    include: {
+      participants: true,
+    },
+  });
+  const response = transformGroup(newGroup);
+
+  return response;
+};
+
+export const getGroupList = async (
+  offset = 0,
+  limit = 3,
+  order = 'createdAt',
+  search
+) => {
+  let orderBy;
+  switch (order) {
+    case 'likeCount':
+      orderBy = { likeCount: 'desc' };
+      break;
+    case 'participantCount':
+      orderBy = { participantCount: 'desc' };
+      break;
+    case 'createdAt':
+    default:
+      orderBy = { createdAt: 'desc' };
+  }
+
+  const where = search
+    ? {
+        OR: [{ group_name: { contains: String(search), mode: 'insensitive' } }],
+      }
+    : {};
+
+  const groups = await prisma.group.findMany({
+    where,
+    orderBy,
+    skip: Number(offset),
+    take: Number(limit),
+    include: {
+      participants: true,
+    },
+  });
+
+  const response = groups.map(transformGroup);
+
+  return response;
+};
+
+export const getGroupById = async (groupId) => {
+  const group = await prisma.group.findUniqueOrThrow({
+    where: { group_id: groupId },
+    include: {
+      participants: true,
+    },
+  });
+  const response = transformGroup(group);
+  return response;
+};
+
+export const updateGroup = async (groupId, data) => {
+  const updatedGroup = await prisma.group.update({
+    where: { group_id: groupId },
+    data: {
+      group_name: data.name,
+      nickname: data.ownerNickname,
+      password: data.ownerPassword,
+      description: data.description || null,
+      image_url: data.photoUrl || null,
+      goalRep: data.goalRep,
+      discord_webhook_url: data.discordWebhookUrl || null,
+      discord_invite_url: data.discordInviteUrl || null,
+      tags: data.tags || [],
+    },
+  });
+  return updatedGroup;
+};
+
+export const deleteGroup = async (groupId) => {
+  await prisma.group.delete({
+    where: { group_id: groupId },
+  });
+};
+
+export const likeGroup = async (groupId) => {
+  const incremented = await prisma.group.update({
+    where: { group_id: groupId },
+    data: { likeCount: { increment: 1 } },
+  });
+  return incremented;
+};
+
+export const unlikeGroup = async (groupId) => {
+  const decremented = await prisma.group.update({
+    where: { group_id: groupId },
+    data: { likeCount: { decrement: 1 } },
+  });
+  return decremented;
+};
+
+export const checkAndAwardBadges = async (groupId) => {
+  const group = await prisma.group.findUnique({
+    where: { group_id: groupId },
+  });
+  // 추천
+  if (group.likeCount >= 100 && !group.badges.includes(Badges.LIKE_100)) {
+    await prisma.group.update({
+      where: { group_id: groupId },
+      data: {
+        badges: {
+          push: Badges.LIKE_100,
+        },
+      },
+    });
+  } else if (group.likeCount < 100 && group.badges.includes(Badges.LIKE_100)) {
+    await prisma.group.update({
+      where: { group_id: groupId },
+      data: {
+        badges: {
+          // 뱃지 제거
+          set: group.badges.filter((badge) => badge !== Badges.LIKE_100),
+        },
+      },
+    });
+  }
+  // // 참여자
+  // const participantCount = await prisma.groupUser.count({
+  //   where: { group_id: groupId },
+  // })
+  // if ( participantCount >= 10 && !group.badges.includes(Badges.PARTICIPATION_10)){
+  //   await prisma.group.update({
+  //     where: { group_id: groupId },
+  //     data: {
+  //       badges: {
+  //         push: Badges.PARTICIPATION_10,
+  //       },
+  //     },
+  //   });
+  // }
+  // // 운동 기록
+  // const recordCount = await prisma.group.count({
+  //   where: { group_id: groupId },
+  // })
+  // if ( recordCount >= 1 && !group.badges.includes(Badges.RECORD_100)){
+  //   await prisma.group.update({
+  //     where: { group_id: groupId },
+  //     data: {
+  //       badges: {
+  //         push: Badges.RECORD_100,
+  //       },
+  //     },
+  //   });
+  // }
+};
+
+function transformGroup(group) {
+  return {
+    id: group.group_id,
+    name: group.group_name,
+    description: group.description,
+    photoUrl: group.image_url,
+    goalRep: group.goalRep,
+    discordWebhookUrl: group.discord_webhook_url,
+    discordInviteUrl: group.discord_invite_url,
+    owner: {
+      nickname: group.nickname,
+      id: group.nickname,
+      createdAt: group.createdAt,
+      updatedAt: group.updatedAt,
+    },
+    likeCount: group.likeCount,
+    tags: group.tags,
+    participants: group.participants ?? [],
+    badges: group.badges,
+    recordCount: group.recommendation_count,
+    createdAt: group.createdAt,
+    updatedAt: group.updatedAt,
+  };
+}
+
+export default {
+  createGroup,
+  updateGroup,
+  deleteGroup,
+  likeGroup,
+  unlikeGroup,
+  getGroupList,
+  getGroupById,
+  checkAndAwardBadges,
+};

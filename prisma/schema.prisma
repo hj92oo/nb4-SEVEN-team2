@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Group {
+  group_id             Int          @id @default(autoincrement())
+  group_name           String
+  description          String?
+  image_url            String?
+  nickname             String
+  password             String
+  tags                 String[]     @default([])   
+  goalRep              Int
+  discord_webhook_url  String?
+  discord_invite_url   String?
+  exercise_count Int          @default(0)
+  total                Int?
+  likeCount            Int?         @default(0)
+  badges               Badges[]     @default([])
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  // 반대 필드 추가
+  exercises            Exercise[]   @relation("GroupExercises")
+  participants         GroupUser[]
+}
+
+model GroupUser {
+  participant_id     Int        @id @default(autoincrement())
+  group_id           Int
+  nickname           String
+  password           String
+  created_at         DateTime   @default(now())
+  updated_at         DateTime   @updatedAt
+  group              Group      @relation(fields: [group_id], references: [group_id], onDelete: Cascade)
+
+  // 반대 필드 추가
+  exercises          Exercise[] @relation("GroupUserExercises")
+
+  @@unique([group_id, nickname])
+}
+
+model Exercise {
+  exercise_id    Int          @id @default(autoincrement())
+  group_user_id  Int
+  exerciseType   ExerciseType
+  description    String?      @db.VarChar(255)
+  time           Int?
+  distance       Int?
+  photos         String?      @db.VarChar(255)
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @default(now()) @updatedAt
+  group_id       Int
+
+  group_user     GroupUser    @relation("GroupUserExercises", fields: [group_user_id], references: [participant_id])
+  group          Group        @relation("GroupExercises", fields: [group_id], references: [group_id])
+}
+
+enum ExerciseType  {
+  RUN
+  BIKE
+  SWIM
+}
+
+enum Badges {
+  LIKE_100
+  PARTICIPATION_10
+  RECORD_100
+}
