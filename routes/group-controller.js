@@ -2,10 +2,9 @@ import GroupService from './group-service.js';
 import { validationResult } from 'express-validator';
 import { PrismaClient } from '@prisma/client';
 
-
 const prisma = new PrismaClient();
 
-export async function createGroup (req, res) {
+export async function createGroup(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const arrayErrors = Array.isArray(errors.array()) ? errors.array() : [];
@@ -19,7 +18,7 @@ export async function createGroup (req, res) {
     console.error('GroupController.createGroup Error:', error);
     res.status(500).json({ message: '서버 오류가 발생했습니다.' });
   }
-};
+}
 
 export async function getGroupById(req, res) {
   try {
@@ -41,7 +40,7 @@ export async function getGroupList(req, res) {
       order,
       search
     );
-    res.status(200).json({data : groups});
+    res.status(200).json({ data: groups });
   } catch (error) {
     console.error('GroupController.getGroupList Error:', error);
     res.status(404).json({ message: '그룹 목록 조회에 실패했습니다.' });
@@ -80,6 +79,7 @@ export async function likeGroup(req, res) {
   const groupId = parseInt(req.params.groupId);
   try {
     const updated = await GroupService.likeGroup(groupId);
+    await GroupService.checkAndAwardBadges(groupId); // 좋아요 뱃지
     res.status(200).json(updated);
   } catch (error) {
     console.error('GroupController.likeGroup Error:', error);
@@ -88,7 +88,7 @@ export async function likeGroup(req, res) {
 }
 
 export async function unlikeGroup(req, res) {
-  console.log("unlike")
+  console.log('unlike');
   const groupId = parseInt(req.params.groupId);
   try {
     const updated = await GroupService.unlikeGroup(groupId);
@@ -124,7 +124,8 @@ export async function getRecords(req, res) {
     return res.json(exercise);
   } catch (error) {
     console.error('getexercise Error:', error);
-    return res.status(500).json({ message: '레코드 조회 중 오류가 발생했습니다.' });
+    return res
+      .status(500)
+      .json({ message: '레코드 조회 중 오류가 발생했습니다.' });
   }
 }
-
