@@ -1,25 +1,75 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-const groupSchema = z.object({
-  name: z.string().min(1, { message: '그룹명을 입력해 주세요.' }),
-  description: z.string().min(1, { message: '설명을 입력해 주세요.' }),
-  photoUrl: z.string().optional(),
-  goalRep: z.number().min(1, { message: 'goalRep 필드는 필수입니다.' }),
-  discordWebhookUrl: z.url({
-    message: '올바른 디스코드 웹훅 URL 형식을 입력해 주세요.',
-  }),
-  discordInviteUrl: z.url({
-    message: '올바른 디스코드 초대 URL 형식을 입력해 주세요.',
-  }),
-  tags: z.array(z.string()).optional(),
-  ownerNickname: z.string().min(1, { message: '닉네임을 입력해 주세요.' }),
-  ownerPassword: z.string().min(1, { message: '패스워드를 입력해 주세요.' }),
+// 🔹 enum 매핑
+export const ExerciseTypeEnum = z.enum(["RUN", "BIKE", "SWIM"]);
+export const BadgesEnum = z.enum(["LIKE_100", "PARTICIPATION_10", "RECORD_100"]);
+
+const urlValidator = z.preprocess(
+  (val) => (val === "" ? undefined : val),
+  z
+    .string()
+    .refine(
+      (v) => {
+        try {
+          new URL(v);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "유효하지 않은 URL입니다." }
+    )
+    .optional()
+);
+
+export const createandupdateGroupSchema = z.object({
+  name: z.string().min(1, "그룹 이름은 필수입니다."),
+  description: z.string().optional(),
+
+  photoUrl: z.string(),
+
+  goalRep: z.preprocess(
+    (val) => {
+      if (val === "" || val === null || typeof val === "undefined") return undefined;
+      if (typeof val === "string") return Number(val);
+      return val;
+    },
+    z.number().int().nonnegative().optional()
+  ),
+
+  discordWebhookUrl: urlValidator,
+  discordInviteUrl: urlValidator,
+
+  tags: z.preprocess(
+    (val) => {
+      if (typeof val === "string") {
+        try {
+          const parsed = JSON.parse(val);
+          return parsed;
+        } catch {
+          return [val];
+        }
+      }
+      return val;
+    },
+    z.array(z.string()).optional()
+  ),
+
+  ownerNickname: z.string().min(1, "ownerNickname은 필수입니다."),
+  ownerPassword: z.string().min(1, "ownerPassword는 필수입니다."),
 });
 
-export const validateGroup = (req, res, next) => {
-  const result = groupSchema.safeParse(req.body);
-  if (!result.success) {
-    return res.status(400).json({ errors: result.error.errors });
-  }
-  next();
-};
+/**
+ * Exercise
+ */
+export const createExerciseSchema = z.object({
+  group_user_id: z.number().int(),
+  group_id: z.number().int(),
+  exerciseType: ExerciseTypeEnum,
+  description: z.string().max(255).optional(),
+  time: z.number().int().nonnegative().optional(),
+  distance: z.number().int().nonnegative().optional(),
+  photos: z.string().url().optional(),
+});
+
+export const updateExerciseSchema = createExerciseSchema.partial();

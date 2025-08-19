@@ -1,10 +1,29 @@
 import { PrismaClient } from '@prisma/client';
 
+
 const prisma = new PrismaClient();
 
 export const createGroup = async (data) => {
-  const newGroup = await prisma.group.create({ data });
-  return newGroup;
+  const newGroup = await prisma.group.create({
+        data: {
+          group_name: data.name,
+          nickname: data.ownerNickname,
+          password: data.ownerPassword,
+          description: data.description || null,
+          image_url: data.photoUrl || null,
+          goalRep: data.goalRep,
+          target_count: data.targetCount || null,
+          discord_webhook_url: data.discordWebhookUrl || null,
+          discord_invite_url: data.discordInviteUrl || null,
+          tags: data.tags || [],
+        },
+        include: {
+          participants: true,
+        },
+      });
+      const response = transformGroup(newGroup);
+
+  return response;
 };
 
 export const getGroupList = async (
@@ -37,45 +56,55 @@ export const getGroupList = async (
     orderBy,
     skip: Number(offset),
     take: Number(limit),
+    include: {
+      participants: true,
+    },
   });
 
-  return groups;
+  const response = groups.map(transformGroup);
+  
+  return response;
 };
 
 export const getGroupById = async (groupId) => {
   const group = await prisma.group.findUniqueOrThrow({
-    where: { id: groupId },
-    select: {
-      name: true,
-      description: true,
-      nickname: true,
-      photoUrl: true,
-      tags: true,
-      goalRep: true,
-      discordInviteUrl: true,
+    where: { group_id: groupId },
+    include: {
+      participants: true,
     },
   });
-
-  return group;
+  const response = transformGroup(group);
+  return response;
 };
 
 export const updateGroup = async (groupId, data) => {
   const updatedGroup = await prisma.group.update({
-    where: { id: groupId },
-    data,
+    where: { group_id : groupId },
+    data: {
+          group_name: data.name,
+          nickname: data.ownerNickname,
+          password: data.ownerPassword,
+          description: data.description || null,
+          image_url: data.photoUrl || null,
+          goalRep: data.goalRep,
+          target_count: data.targetCount || null,
+          discord_webhook_url: data.discordWebhookUrl || null,
+          discord_invite_url: data.discordInviteUrl || null,
+          tags: data.tags || [],
+        },
   });
   return updatedGroup;
 };
 
 export const deleteGroup = async (groupId) => {
   await prisma.group.delete({
-    where: { id: groupId },
+    where: { group_id : groupId },
   });
 };
 
 export const likeGroup = async (groupId) => {
   const incremented = await prisma.group.update({
-    where: { id: groupId },
+    where: { group_id : groupId },
     data: { likeCount: { increment: 1 } },
   });
   return incremented;
@@ -88,6 +117,31 @@ export const unlikeGroup = async (groupId) => {
   });
   return decremented;
 };
+
+function transformGroup(group) {
+  return {
+    id : group.group_id,
+    name: group.group_name,
+    description: group.description,
+    photoUrl: group.image_url,
+    goalRep: group.goalRep,
+    discordWebhookUrl: group.discord_webhook_url,
+    discordInviteUrl: group.discord_invite_url,
+    owner : {
+      nickname : group.nickname,
+      id : group.nickname,
+      createdAt : group.createdAt,
+      updatedAt : group.updatedAt,
+    },
+    likeCount : group.likeCount,
+    tags : group.tags,
+    participants: group.participants ?? [],
+    badges : group.badges,
+    recordCount :  group.recommendation_count,
+    createdAt : group.createdAt,
+    updatedAt : group.updatedAt
+  }
+}
 
 export default {
   createGroup,
