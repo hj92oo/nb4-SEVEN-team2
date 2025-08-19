@@ -9,10 +9,6 @@ import imageRoutes from './routes/images.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ES 모듈에서 __dirname 정의
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // CORS 설정
 app.use(
   cors({
@@ -23,10 +19,10 @@ app.use(
 
 app.use(express.json({ limit: '10mb' }));
 
-// 업로드 폴더 정적 제공
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// ✅ 업로드 폴더 정적 제공
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-// 라우트 연결
+// 라우터 연결
 app.use('/groups', groupRoutes);
 app.use('/images', imageRoutes);
 

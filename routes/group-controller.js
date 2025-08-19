@@ -23,7 +23,6 @@ export async function createGroup (req, res) {
 
 export async function getGroupById(req, res) {
   try {
-    console.log(req.params)
     const groupId = parseInt(req.params.groupId);
     const group = await GroupService.getGroupById(groupId);
     res.status(200).json(group);
@@ -89,6 +88,7 @@ export async function likeGroup(req, res) {
 }
 
 export async function unlikeGroup(req, res) {
+  console.log("unlike")
   const groupId = parseInt(req.params.groupId);
   try {
     const updated = await GroupService.unlikeGroup(groupId);
