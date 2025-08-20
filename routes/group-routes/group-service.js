@@ -36,9 +36,9 @@ export const getGroupList = async (
     case 'likeCount':
       order = { likeCount: 'desc' };
       break;
-    /* case 'participantCount':
-      order = { participantCount: 'desc' };
-      break; */
+      case 'participantCount':
+      order = { participant_id: { _count: 'desc' } };
+      break;
     case 'createdAt':
     default:
       order = { createdAt: 'desc' };
@@ -117,12 +117,32 @@ export const unlikeGroup = async (groupId) => {
   return decremented;
 };
 
+export const GroupParticipation = async (data, group_id) => {
+  const participation = await prisma.groupUser.create({
+    data: {
+      group_id: group_id,
+      nickname: data.nickname,
+      password: data.password,
+    },
+  });
+
+  const group = await prisma.group.findUniqueOrThrow({
+    where: { group_id: group_id },
+    include: {
+      participants: true,
+    },
+  });
+
+  const response = transformGroup(group);
+  return response;
+}
+
 // TeamA add the badges 
 export const checkAndAwardBadges = async (groupId) => {
   const group = await prisma.group.findUnique({
     where: { group_id: groupId },
   });
-  // 추천
+  // 추천 배지 획득
   if (group.likeCount >= 100 && !group.badges.includes(Badges.LIKE_100)) {
     await prisma.group.update({
       where: { group_id: groupId },
@@ -131,34 +151,45 @@ export const checkAndAwardBadges = async (groupId) => {
           push: Badges.LIKE_100,
         },
       },
-    })
-  } 
+    });
+  }   // 추천 배지 제거
   else if (group.likeCount < 100 && group.badges.includes(Badges.LIKE_100)) {
     await prisma.group.update({
       where: { group_id: groupId },
       data: {
         badges: {
-          // 뱃지 제거
+          
           set: group.badges.filter((badge) => badge !== Badges.LIKE_100),
         },
       },
     });
   } 
+  // 참여자 수 배지 획득
+  const participantCounts = await prisma.groupUser.count({
+    where: { group_id: groupId },
+  });
+  if (participantCounts >= 4 && !group.badges.includes(Badges.PARTICIPATION_10)) {
+    await prisma.group.update({
+      where: { group_id: groupId },
+      data: {
+        badges: {
+          push: Badges.PARTICIPATION_10,
+        },
+      },
+    });
+  } 
+  // 참여자 수 배지 제거
+  else if (participantCounts < 4 && group.badges.includes(Badges.PARTICIPATION_10)) {
+    await prisma.group.update({
+      where: { group_id: groupId },
+      data: {
+        badges: {
+          set: group.badges.filter((badge) => badge !== Badges.PARTICIPATION_10),
+        },
+      },
+    });
+  } 
 
-  // // 참여자
-  // const participantCount = await prisma.groupUser.count({
-  //   where: { group_id: groupId },
-  // })
-  // if ( participantCount >= 10 && !group.badges.includes(Badges.PARTICIPATION_10)){
-  //   await prisma.group.update({
-  //     where: { group_id: groupId },
-  //     data: {
-  //       badges: {
-  //         push: Badges.PARTICIPATION_10,
-  //       },
-  //     },
-  //   });
-  // }
   // // 운동 기록
   // const recordCount = await prisma.group.count({
   //   where: { group_id: groupId },
@@ -208,5 +239,6 @@ export default {
   unlikeGroup,
   getGroupList,
   getGroupById,
+  GroupParticipation,
   checkAndAwardBadges
 };
