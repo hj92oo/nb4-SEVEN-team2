@@ -47,7 +47,7 @@ export const getGroupList = async (
 
   const where = search
     ? {
-        OR: [{ name: { contains: String(search), mode: 'insensitive' } }],
+        OR: [{ group_name: { contains: String(search), mode: 'insensitive' } }],
       }
     : {};
 
@@ -118,6 +118,26 @@ export const unlikeGroup = async (groupId) => {
   return decremented;
 };
 
+export const GroupParticipation = async (data, group_id) => {
+  const participation = await prisma.groupUser.create({
+    data: {
+      group_id: group_id,
+      nickname: data.nickname,
+      password: data.password,
+    },
+  });
+
+  const group = await prisma.group.findUniqueOrThrow({
+    where: { group_id: group_id },
+    include: {
+      participants: true,
+    },
+  });
+
+  const response = transformGroup(group);
+  return response;
+};
+
 function transformGroup(group) {
   return {
     id : group.group_id,
@@ -151,4 +171,5 @@ export default {
   unlikeGroup,
   getGroupList,
   getGroupById,
+  GroupParticipation
 };
