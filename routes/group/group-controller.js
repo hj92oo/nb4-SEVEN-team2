@@ -109,7 +109,7 @@ export async function group_participation(req, res) {
   try {
     const dto = req.body;
     const groupId = parseInt(req.params.groupId, 10);
-    await GroupService.checkAndAwardBadges(groupId);  // 참여자 수 뱃지 획득
+    getBadges(groupId);  // 참여자 수 뱃지 획득
 
     if (isNaN(groupId)) {
       return res.status(400).json({ error: "Invalid groupId" });
