@@ -34,11 +34,11 @@ export async function getGroupById(req, res) {
 
 export async function getGroupList(req, res) {
   try {
-    const { offset, limit, order, search } = req.query;
+    const { offset, limit, orderBy, search } = req.query;
     const groups = await GroupService.getGroupList(
       Number.isNaN(Number(offset)) ? 0 : Number(offset),
       Number.isNaN(Number(limit)) ? 3 : Number(limit),
-      order,
+      orderBy,
       search
     );
     res.status(200).json({data : groups});
@@ -80,6 +80,7 @@ export async function likeGroup(req, res) {
   const groupId = parseInt(req.params.groupId);
   try {
     const updated = await GroupService.likeGroup(groupId);
+    await GroupService.checkAndAwardBadges(groupId); // 좋아요 뱃지
     res.status(200).json(updated);
   } catch (error) {
     console.error('GroupController.likeGroup Error:', error);

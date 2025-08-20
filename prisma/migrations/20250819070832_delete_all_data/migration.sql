@@ -11,7 +11,6 @@ CREATE TABLE "public"."Group" (
     "description" TEXT,
     "image_url" TEXT,
     "nickname" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
     "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "goalRep" INTEGER NOT NULL,
     "target_count" INTEGER,
@@ -23,7 +22,6 @@ CREATE TABLE "public"."Group" (
     "badges" "public"."Badges"[] DEFAULT ARRAY[]::"public"."Badges"[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "ownerId" INTEGER NOT NULL,
 
     CONSTRAINT "Group_pkey" PRIMARY KEY ("group_id")
 );
