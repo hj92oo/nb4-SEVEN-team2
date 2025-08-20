@@ -17,8 +17,9 @@ import { validateZod } from '../../middlewares/validateZod.js'
 const router = express.Router();
 
 // 그룹 생성 라우터
-router.route('/')
-  .post(validateZod(createandupdateGroupSchema) , createGroup).get(getGroupList);
+
+router.route('/').post(validateZod(createandupdateGroupSchema) , createGroup).get(getGroupList);
+
 
 // 그룹 수정 라우터
 router
@@ -30,6 +31,10 @@ router
 router
   .route('/:groupId/records')
   .get(getRecords)
+  
+router  
+  .route('/:groupId/participants')
+  .post(group_participation)
 
 
 router
