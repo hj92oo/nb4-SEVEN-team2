@@ -117,6 +117,26 @@ export const unlikeGroup = async (groupId) => {
   return decremented;
 };
 
+
+export const GroupParticipation = async (data, group_id) => {
+  const participation = await prisma.groupUser.create({
+    data: {
+      group_id: group_id,
+      nickname: data.nickname,
+      password: data.password,
+    },
+  });
+
+  const group = await prisma.group.findUniqueOrThrow({
+    where: { group_id: group_id },
+    include: {
+      participants: true,
+    },
+  });
+
+  const response = transformGroup(group);
+  return response;
+}
 // TeamA add the badges 
 export const checkAndAwardBadges = async (groupId) => {
   const group = await prisma.group.findUnique({
@@ -208,5 +228,6 @@ export default {
   unlikeGroup,
   getGroupList,
   getGroupById,
-  checkAndAwardBadges
+  GroupParticipation,
+  checkAndAwardBadges,
 };
