@@ -93,6 +93,7 @@ export async function unlikeGroup(req, res) {
   const groupId = parseInt(req.params.groupId);
   try {
     const updated = await GroupService.unlikeGroup(groupId);
+    await GroupService.checkAndAwardBadges(groupId); // 좋아요 취소 뱃지
     res.status(200).json(updated);
   } catch (error) {
     console.error('GroupController.unlikeGroup Error:', error);
