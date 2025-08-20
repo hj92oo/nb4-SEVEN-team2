@@ -26,7 +26,7 @@ export const createandupdateGroupSchema = z.object({
   name: z.string().min(1, "그룹 이름은 필수입니다."),
   description: z.string().optional(),
 
-  photoUrl: z.string(),
+  photoUrl: z.string().optional(),
 
   goalRep: z.preprocess(
     (val) => {

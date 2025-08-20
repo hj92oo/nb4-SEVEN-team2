@@ -16,10 +16,9 @@ model Group {
   password             String
   tags                 String[] @default([])
   goalRep              Int
-  target_count         Int?
   discord_webhook_url  String?
   discord_invite_url   String?
-  recommendation_count Int      @default(0)
+  exercise_count       Int      @default(0)
   total                Int?
   likeCount            Int?     @default(0)
   badges               Badges[] @default([])
@@ -32,13 +31,13 @@ model Group {
 }
 
 model GroupUser {
-  participant_id    Int      @id @default(autoincrement())
-  group_id          Int
-  nickname          String
-  password          String
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
-  group             Group    @relation(fields: [group_id], references: [group_id], onDelete: Cascade)
+  participant_id     Int        @id @default(autoincrement())
+  group_id           Int
+  nickname           String
+  password           String
+  created_at         DateTime   @default(now())
+  updated_at         DateTime   @updatedAt
+  group              Group      @relation(fields: [group_id], references: [group_id], onDelete: Cascade)
 
   // 반대 필드 추가
   exercises Exercise[] @relation("GroupUserExercises")
