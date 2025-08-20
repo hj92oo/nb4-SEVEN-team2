@@ -3,7 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import groupRoutes from './routes/group-router.js';
+import groupRoutes from './routes/group/group-router.js';
 import imageRoutes from './routes/images.js';
 
 const app = express();

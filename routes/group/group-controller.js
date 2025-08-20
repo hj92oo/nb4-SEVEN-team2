@@ -1,4 +1,5 @@
 import GroupService from './group-service.js';
+import { getBadges } from '../badges.js';
 import { validationResult } from 'express-validator';
 import { PrismaClient } from '@prisma/client';
 
@@ -33,11 +34,11 @@ export async function getGroupById(req, res) {
 
 export async function getGroupList(req, res) {
   try {
-    const { offset, limit, order, search } = req.query;
+    const { offset, limit, orderBy, search } = req.query;
     const groups = await GroupService.getGroupList(
       Number.isNaN(Number(offset)) ? 0 : Number(offset),
       Number.isNaN(Number(limit)) ? 3 : Number(limit),
-      order,
+      orderBy,
       search
     );
     res.status(200).json({ data: groups });
@@ -79,7 +80,7 @@ export async function likeGroup(req, res) {
   const groupId = parseInt(req.params.groupId);
   try {
     const updated = await GroupService.likeGroup(groupId);
-    await GroupService.checkAndAwardBadges(groupId); // 좋아요 뱃지
+    await getBadges(groupId); // 좋아요 배지 획득
     res.status(200).json(updated);
   } catch (error) {
     console.error('GroupController.likeGroup Error:', error);
@@ -91,11 +92,45 @@ export async function unlikeGroup(req, res) {
   const groupId = parseInt(req.params.groupId);
   try {
     const updated = await GroupService.unlikeGroup(groupId);
-    await GroupService.checkAndAwardBadges(groupId); // 좋아요 뱃지 삭제
+    await getBadges(groupId); // 좋아요 배지 제거
     res.status(200).json(updated);
   } catch (error) {
     console.error('GroupController.unlikeGroup Error:', error);
     res.status(500).json({ message: '추천 취소에 실패했습니다.' });
+  }
+}
+
+export async function group_participation(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const arrayErrors = Array.isArray(errors.array()) ? errors.array() : [];
+    return res.status(400).json({ errors: arrayErrors });
+  }
+
+  try {
+    const dto = req.body;
+    const groupId = parseInt(req.params.groupId, 10);
+
+    const group = await prisma.group.findUniqueOrThrow({
+      where: { group_id: groupId },
+      include: {
+        participants: true,
+      },
+    });
+
+    if (isNaN(groupId)) {
+      return res.status(400).json({ error: "Invalid groupId" });
+    }
+    const create = await GroupService.GroupParticipation(dto, groupId);
+    await getBadges(groupId); // 참여자 배지 추가
+    res.status(201).json(create);
+  } catch (error) {
+    console.error(error); 
+
+    res.status(500).json({
+      message: "그룹 참여 중 오류가 발생했습니다.",
+      detail: error.message
+    });
   }
 }
 
@@ -116,7 +151,6 @@ export async function getRecords(req, res) {
       return res.status(404).json({ message: '해당 그룹을 찾을 수 없습니다.' });
     }
 
-    // orderBy 제거
     const exercise = await prisma.exercise.findMany({
       where: { group_id: groupId },
     });
