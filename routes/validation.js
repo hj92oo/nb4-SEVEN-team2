@@ -1,11 +1,15 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 // 🔹 enum 매핑
-export const ExerciseTypeEnum = z.enum(["RUN", "BIKE", "SWIM"]);
-export const BadgesEnum = z.enum(["LIKE_100", "PARTICIPATION_10", "RECORD_100"]);
+export const ExerciseTypeEnum = z.enum(['RUN', 'BIKE', 'SWIM']);
+export const BadgesEnum = z.enum([
+  'LIKE_100',
+  'PARTICIPATION_10',
+  'RECORD_100',
+]);
 
 const urlValidator = z.preprocess(
-  (val) => (val === "" ? undefined : val),
+  (val) => (val === '' ? undefined : val),
   z
     .string()
     .refine(
@@ -17,46 +21,43 @@ const urlValidator = z.preprocess(
           return false;
         }
       },
-      { message: "유효하지 않은 URL입니다." }
+      {
+        message: '유효하지 않은 URL일걸요?',
+      }
     )
     .optional()
 );
 
 export const createandupdateGroupSchema = z.object({
-  name: z.string().min(1, "그룹 이름은 필수입니다."),
+  name: z.string().min(1, '그룹 이름은 필수입니다.'),
   description: z.string().optional(),
 
-  photoUrl: z.string().optional(),
+  photoUrl: z.string().nullable().optional(),
 
-  goalRep: z.preprocess(
-    (val) => {
-      if (val === "" || val === null || typeof val === "undefined") return undefined;
-      if (typeof val === "string") return Number(val);
-      return val;
-    },
-    z.number().int().nonnegative().optional()
-  ),
+  goalRep: z.preprocess((val) => {
+    if (val === '' || val === null || typeof val === 'undefined')
+      return undefined;
+    if (typeof val === 'string') return Number(val);
+    return val;
+  }, z.number().int().nonnegative().optional()),
 
   discordWebhookUrl: urlValidator,
   discordInviteUrl: urlValidator,
 
-  tags: z.preprocess(
-    (val) => {
-      if (typeof val === "string") {
-        try {
-          const parsed = JSON.parse(val);
-          return parsed;
-        } catch {
-          return [val];
-        }
+  tags: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      try {
+        const parsed = JSON.parse(val);
+        return parsed;
+      } catch {
+        return [val];
       }
-      return val;
-    },
-    z.array(z.string()).optional()
-  ),
+    }
+    return val;
+  }, z.array(z.string()).optional()),
 
-  ownerNickname: z.string().min(1, "ownerNickname은 필수입니다."),
-  ownerPassword: z.string().min(1, "ownerPassword는 필수입니다."),
+  ownerNickname: z.string().min(1, 'ownerNickname은 필수입니다.'),
+  ownerPassword: z.string().min(1, 'ownerPassword는 필수입니다.'),
 });
 
 /**

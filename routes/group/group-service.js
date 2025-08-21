@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const createGroup = async (data) => {
+const createGroup = async (data) => {
   const newGroup = await prisma.group.create({
     data: {
       group_name: data.name,
@@ -24,12 +24,7 @@ export const createGroup = async (data) => {
   return response;
 };
 
-export const getGroupList = async (
-  offset = 0,
-  limit = 3,
-  orderBy,
-  search
-) => {
+const getGroupList = async (offset = 0, limit = 3, orderBy, search) => {
   let order;
   switch (orderBy) {
     case 'likeCount':
@@ -51,7 +46,7 @@ export const getGroupList = async (
 
   const groups = await prisma.group.findMany({
     where,
-    orderBy : order,
+    orderBy: order,
     skip: Number(offset),
     take: Number(limit),
     include: {
@@ -64,7 +59,7 @@ export const getGroupList = async (
   return response;
 };
 
-export const getGroupById = async (groupId) => {
+const getGroupById = async (groupId) => {
   const group = await prisma.group.findUniqueOrThrow({
     where: { group_id: groupId },
     include: {
@@ -75,7 +70,7 @@ export const getGroupById = async (groupId) => {
   return response;
 };
 
-export const updateGroup = async (groupId, data) => {
+const updateGroup = async (groupId, data) => {
   const updatedGroup = await prisma.group.update({
     where: { group_id: groupId },
     data: {
@@ -93,13 +88,13 @@ export const updateGroup = async (groupId, data) => {
   return updatedGroup;
 };
 
-export const deleteGroup = async (groupId) => {
+const deleteGroup = async (groupId) => {
   await prisma.group.delete({
     where: { group_id: groupId },
   });
 };
 
-export const likeGroup = async (groupId) => {
+const likeGroup = async (groupId) => {
   const incremented = await prisma.group.update({
     where: { group_id: groupId },
     data: { likeCount: { increment: 1 } },
@@ -107,7 +102,7 @@ export const likeGroup = async (groupId) => {
   return incremented;
 };
 
-export const unlikeGroup = async (groupId) => {
+const unlikeGroup = async (groupId) => {
   const decremented = await prisma.group.update({
     where: { group_id: groupId },
     data: { likeCount: { decrement: 1 } },
@@ -115,7 +110,7 @@ export const unlikeGroup = async (groupId) => {
   return decremented;
 };
 
-export const GroupParticipation = async (data, group_id) => {
+const GroupParticipation = async (data, group_id) => {
   const participation = await prisma.groupUser.create({
     data: {
       group_id: group_id,
@@ -133,7 +128,7 @@ export const GroupParticipation = async (data, group_id) => {
 
   const response = transformGroup(group);
   return response;
-}
+};
 
 function transformGroup(group) {
   return {

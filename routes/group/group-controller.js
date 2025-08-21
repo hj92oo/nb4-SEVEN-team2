@@ -99,34 +99,6 @@ export async function unlikeGroup(req, res) {
     res.status(500).json({ message: '추천 취소에 실패했습니다.' });
   }
 }
-export async function group_participation(req, res) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const arrayErrors = Array.isArray(errors.array()) ? errors.array() : [];
-    return res.status(400).json({ errors: arrayErrors });
-  }
-
-  try {
-    const dto = req.body;
-    const groupId = parseInt(req.params.groupId, 10);
-    getBadges(groupId);  // 참여자 수 뱃지 획득
-
-    if (isNaN(groupId)) {
-      return res.status(400).json({ error: "Invalid groupId" });
-    }
-    const create = await GroupService.GroupParticipation(dto, groupId);
-
-    res.status(201).json(create);
-  } catch (error) {
-    console.error(error); 
-
-    res.status(500).json({
-      message: "그룹 참여 중 오류가 발생했습니다.",
-      detail: error.message
-    });
-  }
-}
-
 
 export async function group_participation(req, res) {
   const errors = validationResult(req);
@@ -138,56 +110,20 @@ export async function group_participation(req, res) {
   try {
     const dto = req.body;
     const groupId = parseInt(req.params.groupId, 10);
-
-    const group = await prisma.group.findUniqueOrThrow({
-      where: { group_id: groupId },
-      include: {
-        participants: true,
-      },
-    });
+    await getBadges(groupId); // 참여자 수 뱃지 획득
 
     if (isNaN(groupId)) {
-      return res.status(400).json({ error: "Invalid groupId" });
+      return res.status(400).json({ error: 'Invalid groupId' });
     }
     const create = await GroupService.GroupParticipation(dto, groupId);
 
     res.status(201).json(create);
   } catch (error) {
-    console.error(error); 
+    console.error(error);
 
     res.status(500).json({
-      message: "그룹 참여 중 오류가 발생했습니다.",
-      detail: error.message
+      message: '그룹 참여 중 오류가 발생했습니다.',
+      detail: error.message,
     });
-  }
-}
-
-// 임시용
-export async function getRecords(req, res) {
-  const groupId = parseInt(req.params.groupId);
-
-  if (isNaN(groupId)) {
-    return res.status(400).json({ message: '잘못된 그룹 ID입니다.' });
-  }
-
-  try {
-    const group = await prisma.group.findUnique({
-      where: { group_id: groupId },
-    });
-
-    if (!group) {
-      return res.status(404).json({ message: '해당 그룹을 찾을 수 없습니다.' });
-    }
-
-    const exercise = await prisma.exercise.findMany({
-      where: { group_id: groupId },
-    });
-
-    return res.json(exercise);
-  } catch (error) {
-    console.error('getexercise Error:', error);
-    return res
-      .status(500)
-      .json({ message: '레코드 조회 중 오류가 발생했습니다.' });
   }
 }

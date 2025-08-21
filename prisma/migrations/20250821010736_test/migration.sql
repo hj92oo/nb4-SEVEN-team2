@@ -64,4 +64,4 @@ ALTER TABLE "public"."GroupUser" ADD CONSTRAINT "GroupUser_group_id_fkey" FOREIG
 ALTER TABLE "public"."Exercise" ADD CONSTRAINT "Exercise_group_user_id_fkey" FOREIGN KEY ("group_user_id") REFERENCES "public"."GroupUser"("participant_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Exercise" ADD CONSTRAINT "Exercise_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "public"."Group"("group_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."Exercise" ADD CONSTRAINT "Exercise_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "public"."Group"("group_id") ON DELETE CASCADE ON UPDATE CASCADE;
