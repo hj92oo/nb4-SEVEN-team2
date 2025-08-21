@@ -5,12 +5,6 @@ const prisma = new PrismaClient();
 export const checkGroupPassword = async (req, res, next) => {
   const group_id = parseInt(req.params.groupId);
   const { ownerPassword } = req.body;
-  // if (!ownerPassword) {
-  //   return res.status(400).json({
-  //     path: 'ownerPassword',
-  //     message: '비밀번호를 입력해 주세요!',
-  //   });
-  // }
   try {
     const targetGroup = await prisma.group.findFirst({
       where: { group_id: group_id },

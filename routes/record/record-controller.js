@@ -20,9 +20,14 @@ export async function createExercise(req, res) {
 
 export async function getExercises(req, res) {
   const groupId = parseInt(req.params.groupId);
-
+  const { search, orderBy, page, limit } = req.query;
   try {
-    const records = await RecordService.getExercises(groupId);
+    const records = await RecordService.getExercises(groupId, {
+      search,
+      orderBy,
+      page,
+      limit,
+    });
     res.status(200).json(records);
   } catch (error) {
     console.error('ExerciseController.getExercise Error:', error);

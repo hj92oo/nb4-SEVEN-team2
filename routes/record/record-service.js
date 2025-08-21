@@ -45,15 +45,24 @@ const createExercise = async (groupId, data) => {
 };
 
 const getExercises = async (groupId, { page, limit, orderBy, search } = {}) => {
+  console.log('Input Parameters:', { groupId, page, limit, orderBy, search });
+
   const take = parseInt(limit, 10) || 10;
   const skip = ((parseInt(page, 10) || 1) - 1) * take;
 
   const where = search
     ? {
         group_id: groupId,
-        description: { contains: String(search), mode: 'insensitive' },
+        group_user: {
+          nickname: {
+            contains: String(search),
+            mode: 'insensitive',
+          },
+        },
       }
     : { group_id: groupId };
+
+  console.log('Where Clause:', where);
 
   let order = {};
 
@@ -66,6 +75,8 @@ const getExercises = async (groupId, { page, limit, orderBy, search } = {}) => {
       order = { created_at: 'desc' };
       break;
   }
+
+  console.log('Order Clause:', order);
 
   const exercises = await prisma.exercise.findMany({
     where: where,
@@ -82,8 +93,12 @@ const getExercises = async (groupId, { page, limit, orderBy, search } = {}) => {
     },
   });
 
+  console.log('Prisma Query Result:', exercises);
+
   const transformedExercises = exercises.map(transformExercise);
-  const total = await prisma.exercise.count({ where: { group_id: groupId } });
+  const total = await prisma.exercise.count({ where });
+
+  console.log('Total Count:', total);
 
   return {
     data: transformedExercises,
