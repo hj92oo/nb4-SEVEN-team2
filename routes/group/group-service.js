@@ -135,6 +135,24 @@ export const GroupParticipation = async (data, group_id) => {
   return response;
 }
 
+export const deleteUser = async (groupId, nickname) => {
+  const participantuser = await prisma.groupUser.findFirst({
+    where: {
+      group_id:groupId,
+      nickname,
+    },
+    select: {
+      participant_id:true,
+    }
+  })
+  const deleteuser = await prisma.groupUser.delete({
+    where: {
+      participant_id:participantuser.participant_id,
+    },
+  });
+};
+
+
 function transformGroup(group) {
   return {
     id: group.group_id,
