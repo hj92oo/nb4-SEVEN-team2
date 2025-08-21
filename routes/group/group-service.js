@@ -55,8 +55,10 @@ const getGroupList = async (offset = 0, limit = 3, orderBy, search) => {
   });
 
   const response = groups.map(transformGroup);
+  const total = await prisma.group.count({ where });
 
-  return response;
+  return { data: response, total };
+  // return response;
 };
 
 const getGroupById = async (groupId) => {
@@ -149,9 +151,9 @@ function transformGroup(group) {
     tags: group.tags,
     participants: group.participants ?? [],
     badges: group.badges,
-    recordCount: group.recommendation_count,
     createdAt: group.createdAt,
     updatedAt: group.updatedAt,
+    recordCount: group.exercise_count,
   };
 }
 

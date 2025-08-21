@@ -61,7 +61,7 @@ export const getBadges = async (groupId) => {
   const recordCount = await prisma.exercise.count({
     where: { group_id: groupId },
   });
-  if (recordCount >= 2 && !group.badges.includes(Badges.RECORD_100)) {
+  if (recordCount >= 100 && !group.badges.includes(Badges.RECORD_100)) {
     await prisma.group.update({
       where: { group_id: groupId },
       data: {

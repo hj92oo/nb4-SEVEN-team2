@@ -41,7 +41,7 @@ export async function getGroupList(req, res) {
       orderBy,
       search
     );
-    res.status(200).json({ data: groups });
+    res.status(200).json(groups);
   } catch (error) {
     console.error('GroupController.getGroupList Error:', error);
     res.status(404).json({ message: '그룹 목록 조회에 실패했습니다.' });
