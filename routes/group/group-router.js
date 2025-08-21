@@ -8,16 +8,16 @@ import {
   likeGroup,
   unlikeGroup,
   getRecords,
-  group_participation
+  group_participation,
+  deleteUser,
 } from './group-controller.js';
-import { checkGroupPassword } from '../auth.js';
-import { createandupdateGroupSchema } from '../validation.js'
-import { validateZod } from '../../middlewares/validateZod.js'
+import { checkGroupPassword, checkGroupUser } from '../auth.js';
+import { createandupdateGroupSchema } from '../validation.js';
+import { validateZod } from '../../middlewares/validateZod.js';
 
 const router = express.Router();
 
 // 그룹 생성 라우터
-
 router.route('/').post(validateZod(createandupdateGroupSchema) , createGroup).get(getGroupList);
 
 
@@ -31,17 +31,12 @@ router
 router
   .route('/:groupId/records')
   .get(getRecords)
-  
-router  
+router
   .route('/:groupId/participants')
   .post(group_participation)
+  .delete(checkGroupUser, deleteUser)
 
-
-router
-  .route('/:groupId/participants')
-  .post(group_participation);
-
-router
+  router
   .route('/:groupId/likes')
   .post(likeGroup)
   .delete(unlikeGroup);
