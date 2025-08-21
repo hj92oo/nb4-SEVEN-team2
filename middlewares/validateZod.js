@@ -13,7 +13,6 @@
 //         }));
 //         return res.status(400).json({ errors });
 //       }
-
 //       req[target] = result.data;
 //       next();
 //     } catch (e) {
@@ -39,7 +38,6 @@ export const validateZod =
       console.error(e);
 
       if (e.name === 'ZodError' && e.issues) {
-        // 배열 그대로 반환
         const errors = e.issues.map((i) => ({
           path: i.path.join('.'),
           message: i.message,
