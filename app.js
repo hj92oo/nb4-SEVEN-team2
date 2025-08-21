@@ -9,7 +9,6 @@ import imageRoutes from './routes/images.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// CORS 설정
 app.use(
   cors({
     origin: 'http://localhost:3000',
@@ -19,7 +18,6 @@ app.use(
 
 app.use(express.json({ limit: '10mb' }));
 
-// ✅ 업로드 폴더 정적 제공
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // 라우터 연결

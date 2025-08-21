@@ -8,11 +8,12 @@ import {
   likeGroup,
   unlikeGroup,
   getRecords,
-  group_participation
+  group_participation,
+  deleteUser
 } from './group-controller.js';
-import { checkGroupPassword } from '../auth.js';
-import { createandupdateGroupSchema } from '../validation.js'
-import { validateZod } from '../../middlewares/validateZod.js'
+import { checkGroupPassword , checkUserPassword } from './auth.js';
+import { createandupdateGroupSchema } from './validation.js'
+import { validateZod } from '../middlewares/validateZod.js'
 
 const router = express.Router();
 
@@ -35,6 +36,7 @@ router
 router  
   .route('/:groupId/participants')
   .post(group_participation)
+  .delete(checkUserPassword , deleteUser)
 
 
 router

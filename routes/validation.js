@@ -23,7 +23,7 @@ const urlValidator = z.preprocess(
 );
 
 export const createandupdateGroupSchema = z.object({
-  name: z.string().min(1, "그룹 이름은 필수입니다."),
+  name: z.string().min(1),
   description: z.string().optional(),
 
   photoUrl: z.string().optional(),
