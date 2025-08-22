@@ -1,12 +1,12 @@
 import express from 'express';
-import { createExercise, getExercises } from './record-controller.js';
+import { createExercise, getExerciseList } from './record-controller.js';
 import { checkGroupUser } from '../auth.js';
 
 const router = express.Router();
 
 router
   .route('/:groupId/records')
-  .get(getExercises)
+  .get(getExerciseList)
   .post(checkGroupUser, createExercise);
 
 export default router;

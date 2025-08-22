@@ -115,13 +115,16 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
     await axios.post(webhookUrl, message);
     console.log('디스코드 알림이 성공적으로 전송되었습니다.');
   } catch (error) {
-    console.error('디스코드 알림 전송 실패:', error);
+    console.error('디스코드 알림 전송 실패:', error.message);
   }
 }
 
-const getExercises = async (groupId, { page, limit, orderBy, search } = {}) => {
-  const take = parseInt(limit, 10) || 10;
-  const skip = ((parseInt(page, 10) || 1) - 1) * take;
+const getExerciseList = async (
+  groupId,
+  { page = 1, limit = 10, orderBy, search } = {}
+) => {
+  const take = parseInt(limit, 10);
+  const skip = (parseInt(page, 10) - 1) * take;
 
   const where = search
     ? {
@@ -190,5 +193,5 @@ const transformExercise = (exercise) => {
 
 export default {
   createExercise,
-  getExercises,
+  getExerciseList,
 };

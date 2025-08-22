@@ -22,7 +22,6 @@
 //         return { path: obj.path[0], message: obj.message };
 //       });
 //       return res.status(400).json(message);
-//       // next(e);
 //     }
 //   };
 

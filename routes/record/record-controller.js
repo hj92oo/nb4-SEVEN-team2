@@ -18,11 +18,11 @@ export async function createExercise(req, res) {
   }
 }
 
-export async function getExercises(req, res) {
+export async function getExerciseList(req, res) {
   const groupId = parseInt(req.params.groupId);
   const { search, orderBy, page, limit } = req.query;
   try {
-    const records = await RecordService.getExercises(groupId, {
+    const records = await RecordService.getExerciseList(groupId, {
       search,
       orderBy,
       page,
