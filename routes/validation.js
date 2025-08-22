@@ -32,7 +32,7 @@ export const createandupdateGroupSchema = z.object({
   name: z.string().min(1, '그룹명은 비워둘 수 없어요.'),
   description: z.string().min(1, '설명은 비워둘 수 없어요.'),
   photoUrl: z.string().nullable().optional(),
-  goalRep: z.number().int({ message: '정확한 목표 기록이 맞나요?' }),
+  goalRep: z.number().int(),
 
   discordWebhookUrl: urlValidator,
   discordInviteUrl: urlValidator,
