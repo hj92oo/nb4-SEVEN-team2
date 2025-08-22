@@ -25,8 +25,9 @@ const createGroup = async (data) => {
 };
 
 const getGroupList = async (page = 1, limit = 6, orderBy, search) => {
-  const take = parseInt(limit, 10);
-  const skip = (parseInt(page, 10) - 1) * take;
+  const safePage = Math.max(1, parseInt(page, 10) || 1);
+  const take = Math.max(1, parseInt(limit, 10) || 6);
+  const skip = (safePage - 1) * take;
 
   let order;
   switch (orderBy) {
@@ -135,13 +136,13 @@ const unlikeGroup = async (groupId) => {
 };
 
 const GroupParticipation = async (data, group_id) => {
-  // const participation = await prisma.groupUser.create({
-  //   data: {
-  //     group_id: group_id,
-  //     nickname: data.nickname,
-  //     password: data.password,
-  //   },
-  // });
+  const participation = await prisma.groupUser.create({
+    data: {
+      group_id: group_id,
+      nickname: data.nickname,
+      password: data.password,
+    },
+  });
 
   const group = await prisma.group.findUniqueOrThrow({
     where: { group_id: group_id },

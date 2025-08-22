@@ -78,6 +78,10 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
     SWIM: 0x0000ff, // 파랑
   };
 
+  const totalSeconds = newExercise.time;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
   if (!webhookUrl) {
     return;
   }
@@ -88,7 +92,7 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
       embeds: [
         {
           title: `${newExercise.group_user.nickname}님의 새로운 기록`,
-          color: exerciseTypeColors[newExercise.exerciseType] || 0x3498db,
+          color: exerciseTypeColors[newExercise.exerciseType] || 0xffffff,
           fields: [
             {
               name: '운동 종류',
@@ -99,7 +103,7 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
             },
             {
               name: '시간',
-              value: `${newExercise.time}분`,
+              value: `${minutes}분 ${seconds}초`,
               inline: true,
             },
             {
@@ -123,8 +127,9 @@ const getExerciseList = async (
   groupId,
   { page = 1, limit = 10, orderBy, search } = {}
 ) => {
-  const take = parseInt(limit, 10);
-  const skip = (parseInt(page, 10) - 1) * take;
+  const safePage = Math.max(1, parseInt(page, 10) || 1);
+  const take = Math.max(1, parseInt(limit, 10) || 10);
+  const skip = (safePage - 1) * take;
 
   const where = search
     ? {
@@ -151,10 +156,10 @@ const getExerciseList = async (
   }
 
   const exercises = await prisma.exercise.findMany({
-    where: where,
+    where,
     orderBy: order,
-    skip: skip,
-    take: take,
+    skip,
+    take,
     include: {
       group_user: {
         select: {

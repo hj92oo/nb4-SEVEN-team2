@@ -66,7 +66,7 @@ export async function deleteGroup(req, res) {
     const dto = req;
     const groupId = parseInt(dto.params.groupId);
     await GroupService.deleteGroup(groupId);
-    res.status(204);
+    res.status(204).send();
   } catch (error) {
     console.error('GroupController.deleteGroup Error:', error);
     res.status(500).json({ message: '그룹 삭제에 실패했습니다.' });
@@ -124,7 +124,7 @@ export async function deleteUser(req, res) {
     const { nickname } = dto.body;
     const groupId = parseInt(dto.params.groupId);
     await GroupService.deleteUser(groupId, nickname);
-    console.log('success');
+    // console.log('success');
     await getBadges(groupId); // 참여자 수 뱃지 제거
     res.status(200).json();
   } catch (error) {
