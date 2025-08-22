@@ -104,7 +104,7 @@ export const getBadges = async (groupId) => {
   const badgeConditions = [
     {
       badge: Badges.LIKE_100,
-      condition: group.likeCount >= 100,
+      condition: group.likeCount >= 1,
     },
     {
       badge: Badges.PARTICIPATION_10,
