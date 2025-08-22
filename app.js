@@ -4,9 +4,11 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import groupRoutes from './routes/group/group-router.js';
+import recordRoutes from './routes/record/record-router.js';
 import imageRoutes from './routes/images.js';
 
 const app = express();
+
 const PORT = process.env.PORT || 3001;
 
 // CORS 설정
@@ -24,6 +26,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // 라우터 연결
 app.use('/groups', groupRoutes);
+app.use('/groups', recordRoutes);
 app.use('/images', imageRoutes);
 
 app.listen(PORT, () => {

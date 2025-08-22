@@ -1,5 +1,5 @@
 import GroupService from './group-service.js';
-import { getBadges } from '../badges.js';
+import getBadges from '../badges.js';
 import { validationResult } from 'express-validator';
 import { PrismaClient } from '@prisma/client';
 
@@ -34,14 +34,14 @@ export async function getGroupList(req, res) {
   try {
     validationResult(req).throw();
     const dto = req
-    const { offset, limit, orderBy, search } = dto.query;
-    const groups = await GroupService.getGroupList(
-      Number.isNaN(Number(offset)) ? 0 : Number(offset),
-      Number.isNaN(Number(limit)) ? 3 : Number(limit),
+    const { page=1, limit=6, orderBy, search } = dto.query;
+    const { data: groups, total } = await GroupService.getGroupList(
+      Number.isNaN(Number(page)) ? 1 : Number(page),
+      Number.isNaN(Number(limit)) ? 6 : Number(limit),
       orderBy,
       search
     );
-    res.status(200).json({ data: groups });
+    res.status(200).json({ data: groups, total: total });
   } catch (error) {
     console.error('GroupController.getGroupList Error:', error);
     res.status(404).json({ message: '그룹 목록 조회에 실패했습니다.' });
@@ -79,7 +79,7 @@ export async function likeGroup(req, res) {
     const dto = req;
     const groupId = parseInt(dto.params.groupId);
     const updated = await GroupService.likeGroup(groupId);
-    await getBadges(groupId); // 좋아요 배지 획득
+    await getBadges.likeBadges(groupId); // 좋아요 배지 획득
     res.status(200).json(updated);
   } catch (error) {
     console.error('GroupController.likeGroup Error:', error);
@@ -93,7 +93,7 @@ export async function unlikeGroup(req, res) {
     const dto = req;
     const groupId = parseInt(dto.params.groupId);
     const updated = await GroupService.unlikeGroup(groupId);
-    await getBadges(groupId); // 좋아요 배지 제거
+    await getBadges.likeBadges(groupId); // 좋아요 배지 제거
     res.status(200).json(updated);
   } catch (error) {
     console.error('GroupController.unlikeGroup Error:', error);
@@ -129,35 +129,5 @@ export async function deleteUser(req, res) {
   } catch (error) {
     console.error('GroupController.deleteGroup Error:', error);
     res.status(500).json({ message: '그룹 삭제에 실패했습니다.' });
-  }
-}
-
-// 임시용
-export async function getRecords(req, res) {
-  const groupId = parseInt(req.params.groupId);
-
-  if (isNaN(groupId)) {
-    return res.status(400).json({ message: '잘못된 그룹 ID입니다.' });
-  }
-
-  try {
-    const group = await prisma.group.findUnique({
-      where: { group_id: groupId },
-    });
-
-    if (!group) {
-      return res.status(404).json({ message: '해당 그룹을 찾을 수 없습니다.' });
-    }
-
-    const exercise = await prisma.exercise.findMany({
-      where: { group_id: groupId },
-    });
-
-    return res.json(exercise);
-  } catch (error) {
-    console.error('getexercise Error:', error);
-    return res
-      .status(500)
-      .json({ message: '레코드 조회 중 오류가 발생했습니다.' });
   }
 }

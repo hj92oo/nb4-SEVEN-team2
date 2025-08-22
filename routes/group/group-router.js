@@ -29,9 +29,6 @@ router
   .delete(checkGroupPassword, deleteGroup);
 
 router
-  .route('/:groupId/records')
-  .get(getRecords)
-router
   .route('/:groupId/participants')
   .post(group_participation)
   .delete(checkGroupUser, deleteUser)

@@ -25,7 +25,7 @@ export const createGroup = async (data) => {
 };
 
 export const getGroupList = async (
-  offset = 0,
+  page=1,
   limit = 3,
   orderBy,
   search
@@ -48,20 +48,19 @@ export const getGroupList = async (
         OR: [{ group_name: { contains: String(search), mode: 'insensitive' } }],
       }
     : {};
-
+  const offset = (parseInt(page) - 1) * parseInt(limit) >= 0 ? (parseInt(page) - 1) * parseInt(limit) : 0;
   const groups = await prisma.group.findMany({
     where,
-    orderBy : order,
-    skip: Number(offset),
-    take: Number(limit),
+    orderBy: order,
+    skip: parseInt(offset),
+    take: parseInt(limit),
     include: {
       participants: true,
     },
   });
-
+  const total = await prisma.group.count({ where });
   const response = groups.map(transformGroup);
-
-  return response;
+  return { data: response, total };
 };
 
 export const getGroupById = async (groupId) => {
