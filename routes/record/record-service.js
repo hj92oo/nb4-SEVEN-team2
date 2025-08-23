@@ -62,7 +62,7 @@ export const createExercise = async (data) => {
       description: data.description || null,
       time: data.time,
       distance: data.distance,
-      photos: data.photoUrl || null,
+      photos: data.photoUrl ? { push: data.photoUrl } : null,
       group_user: {
         connect: {
           group_id_nickname: {
