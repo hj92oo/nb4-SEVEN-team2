@@ -25,8 +25,8 @@ const createGroup = async (data) => {
 };
 
 export const getGroupList = async (
-  page=1,
-  limit = 3,
+  page,
+  limit,
   orderBy,
   search
 ) => {

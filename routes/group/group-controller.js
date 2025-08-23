@@ -34,7 +34,7 @@ export async function getGroupList(req, res) {
   try {
     validationResult(req).throw();
     const dto = req;
-    const { page=1, limit=6, orderBy, search } = dto.query;
+    const { page, limit, orderBy, search } = dto.query;
     const { data: groups, total } = await GroupService.getGroupList(
       Number.isNaN(Number(page)) ? 1 : Number(page),
       Number.isNaN(Number(limit)) ? 6 : Number(limit),
@@ -106,7 +106,7 @@ export async function group_participation(req, res) {
     const dto = req;
     const groupId = parseInt(dto.params.groupId);
     const create = await GroupService.GroupParticipation(dto.body, groupId);
-    await getBadges(groupId); // 참여자 수 뱃지 획득
+    await getBadges.participantBadges(groupId); // 참여자 수 뱃지 획득
     res.status(201).json(create);
   } catch (error) {
     console.error(error);
@@ -125,7 +125,7 @@ export async function deleteUser(req, res) {
     const groupId = parseInt(dto.params.groupId);
     await GroupService.deleteUser(groupId, nickname);
     // console.log('success');
-    await getBadges(groupId); // 참여자 수 뱃지 제거
+    await getBadges.participantBadges(groupId); // 참여자 수 뱃지 제거
     res.status(200).json();
   } catch (error) {
     console.error('GroupController.deleteGroup Error:', error);
