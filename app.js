@@ -5,8 +5,7 @@ import { fileURLToPath } from 'url';
 
 import groupRoutes from './routes/group/group-router.js';
 import imageRoutes from './routes/images.js';
-// import recordRoutes from './routes/record/record-router.js'; // 이게 정상작동
-import recordRoutes from './routes/record/record.js'; // 테스트용
+import recordRoutes from './routes/record/record-router.js';  
 
 const app = express();
 const PORT = process.env.PORT || 3001;
