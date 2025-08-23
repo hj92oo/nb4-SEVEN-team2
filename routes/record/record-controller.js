@@ -30,7 +30,7 @@ export async function createExercise(req, res) {
   try {
     const groupId = parseInt(req.params.groupId, 10);
     const dto = { ...req.body, groupId };
-    const newRecord = await RecordService.createRecord(dto);
+    const newRecord = await RecordService.createExercise(dto);
     res.status(201).json(newRecord);
   } catch (error) {
     console.error('ExerciseController.createExercise Error:', error);
