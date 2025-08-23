@@ -1,10 +1,10 @@
 import express from 'express';
 import {
-  getRecordList,
-  createRecord
+  createExercise,
+  getExerciseList
 } from './record-controller.js';
-import { checkGroupPassword } from '../auth.js';
-import { createandupdateGroupSchema } from '../validation.js'
+import { checkGroupUser } from '../auth.js';
+import { createRecordSchema } from '../validation.js'
 import { validateZod } from '../../middlewares/validateZod.js'
 
 const router = express.Router();
@@ -13,7 +13,7 @@ const router = express.Router();
 
 router
   .route('/:groupId/records')
-  .get(getRecordList)
-  .post(createRecord);
+  .get(getExerciseList)
+  .post(checkGroupUser, validateZod(createRecordSchema), createExercise);
 
 export default router;

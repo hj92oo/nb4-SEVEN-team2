@@ -11,6 +11,24 @@ const app = express();
 
 const PORT = process.env.PORT || 3001;
 
+// 상태코드 등 체크
+app.use((req, res, next) => {
+  const start = process.hrtime();
+
+  res.on('finish', () => {
+    const end = process.hrtime(start);
+    const duration = (end[0] * 1e9 + end[1]) / 1e6;
+
+    console.log(
+      `[백엔드] ${req.method} ${req.originalUrl} ${
+        res.statusCode
+      } in ${duration.toFixed(0)}ms`
+    );
+  });
+
+  next();
+});
+
 // CORS 설정
 app.use(
   cors({
@@ -25,6 +43,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // 라우터 연결
+app.use('/groups', recordRoutes);
 app.use('/groups', groupRoutes);
 app.use('/groups', recordRoutes);
 app.use('/images', imageRoutes);

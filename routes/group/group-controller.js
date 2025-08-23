@@ -5,10 +5,10 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function createGroup (req, res) {
+export async function createGroup(req, res) {
   try {
     validationResult(req).throw();
-    const dto = req
+    const dto = req;
     const newGroup = await GroupService.createGroup(dto.body);
     res.status(201).json(newGroup);
   } catch (error) {
@@ -20,7 +20,7 @@ export async function createGroup (req, res) {
 export async function getGroupById(req, res) {
   try {
     validationResult(req).throw();
-    const dto = req
+    const dto = req;
     const groupId = parseInt(dto.params.groupId);
     const group = await GroupService.getGroupById(groupId);
     res.status(200).json(group);
@@ -33,7 +33,7 @@ export async function getGroupById(req, res) {
 export async function getGroupList(req, res) {
   try {
     validationResult(req).throw();
-    const dto = req
+    const dto = req;
     const { page=1, limit=6, orderBy, search } = dto.query;
     const { data: groups, total } = await GroupService.getGroupList(
       Number.isNaN(Number(page)) ? 1 : Number(page),
@@ -51,7 +51,7 @@ export async function getGroupList(req, res) {
 export async function updateGroup(req, res) {
   try {
     validationResult(req).throw();
-    const dto = req
+    const dto = req;
     const groupId = parseInt(dto.params.groupId);
     const updatedGroup = await GroupService.updateGroup(groupId, dto.body);
     res.status(200).json(updatedGroup);
@@ -66,7 +66,7 @@ export async function deleteGroup(req, res) {
     const dto = req;
     const groupId = parseInt(dto.params.groupId);
     await GroupService.deleteGroup(groupId);
-    res.status(204)
+    res.status(204).send();
   } catch (error) {
     console.error('GroupController.deleteGroup Error:', error);
     res.status(500).json({ message: '그룹 삭제에 실패했습니다.' });
@@ -103,16 +103,16 @@ export async function unlikeGroup(req, res) {
 export async function group_participation(req, res) {
   try {
     validationResult(req).throw();
-    const dto = req
+    const dto = req;
     const groupId = parseInt(dto.params.groupId);
-    getBadges(groupId);  // 참여자 수 뱃지 획득
     const create = await GroupService.GroupParticipation(dto.body, groupId);
+    await getBadges(groupId); // 참여자 수 뱃지 획득
     res.status(201).json(create);
   } catch (error) {
-    console.error(error); 
+    console.error(error);
     res.status(500).json({
-      message: "그룹 참여 중 오류가 발생했습니다.",
-      detail: error.message
+      message: '그룹 참여 중 오류가 발생했습니다.',
+      detail: error.message,
     });
   }
 }
@@ -120,11 +120,12 @@ export async function group_participation(req, res) {
 export async function deleteUser(req, res) {
   try {
     validationResult(req).throw();
-    const dto = req
+    const dto = req;
     const { nickname } = dto.body;
     const groupId = parseInt(dto.params.groupId);
-    await GroupService.deleteUser(groupId , nickname);
-    console.log("success")
+    await GroupService.deleteUser(groupId, nickname);
+    // console.log('success');
+    await getBadges(groupId); // 참여자 수 뱃지 제거
     res.status(200).json();
   } catch (error) {
     console.error('GroupController.deleteGroup Error:', error);

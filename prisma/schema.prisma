@@ -56,8 +56,8 @@ model Exercise {
   created_at    DateTime     @default(now())
   updated_at    DateTime     @default(now()) @updatedAt
   group_id      Int
-  group_user GroupUser @relation("GroupUserExercises", fields: [group_user_id], references: [participant_id])
-  group      Group     @relation("GroupExercises", fields: [group_id], references: [group_id])
+  group_user GroupUser @relation("GroupUserExercises", fields: [group_user_id], references: [participant_id], onDelete: Cascade)
+  group      Group     @relation("GroupExercises", fields: [group_id], references: [group_id], onDelete: Cascade)
 }
 
 enum ExerciseType {
