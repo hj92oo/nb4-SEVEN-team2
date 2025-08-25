@@ -74,7 +74,7 @@ const exerciseBadges = async (groupId) => {
   });
 
   // 운동 기록 배지 획득
-  if (recordCount >= 5 && !group.badges.includes(Badges.RECORD_100)) {
+  if (recordCount >= 100 && !group.badges.includes(Badges.RECORD_100)) {
     await prisma.group.update({
       where: { group_id: groupId },
       data: {
@@ -83,7 +83,7 @@ const exerciseBadges = async (groupId) => {
         },
       },
     }); // 운동 기록 배지 제거
-  } else if (recordCount < 5 && group.badges.includes(Badges.RECORD_100)) {
+  } else if (recordCount < 100 && group.badges.includes(Badges.RECORD_100)) {
     await prisma.group.update({
       where: { group_id: groupId },
       data: {
