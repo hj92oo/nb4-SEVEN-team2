@@ -29,7 +29,7 @@ export async function deleteUser(req, res) {
     const { nickname } = dto.body;
     const groupId = parseInt(dto.params.groupId);
     await ParticipantsService.deleteUser(groupId, nickname);
-    console.log('success');
+    //console.log('success');
     await getBadges.participantBadges(groupId); // 참여자 수 뱃지 제거
     res.status(200).json();
   } catch (error) {

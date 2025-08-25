@@ -33,7 +33,7 @@ export const deleteUser = async (groupId, nickname) => {
         participant_id: true,
       },
     });
-    const recordCount = await tx.exercise.count({
+    const recordCount = await tx.exercise.deleteMany({
       where: {
         group_user_id: participantUser.participant_id,
       },
