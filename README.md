@@ -18,7 +18,20 @@ Github
 주예찬 (개인 Github 링크)
 한가윤 (개인 Github 링크)
 
+<<<<<<< HEAD
 ---
+=======
+프로젝트 소개
+프로그래밍 교육 사이트의 백엔드 시스템 구축
+프로젝트 기간: 2025.08.11 ~ 2025.08.29
+기술 스택
+Backend: Express.js, PrismaORM
+Database: PostgreSQL
+공통 Tool: Git & Github, Discord
+팀원별 구현 기능 상세
+웨인
+(자신이 개발한 기능에 대한 사진이나 gif 파일 첨부)
+>>>>>>> origin/Branch2_Record
 
 ## 프로젝트 소개
 운동 인증 커뮤니티 서비스

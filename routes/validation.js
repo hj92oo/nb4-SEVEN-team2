@@ -47,7 +47,15 @@ export const createRecordSchema = z.object({
   description: z.string().min(1, '설명은 비워둘 수 없어요.'),
   time: z.number().int().nonnegative({ message: '정확한 시간이 맞나요?' }),
   distance: z.number().int().nonnegative({ message: '정확한 거리가 맞나요?' }),
-  photos: z.array(z.url()).optional(),
+  photos: z
+    .array(z.url())
+    .max(3, '사진은 최대 3장까지 등록 가능해요.')
+    .optional(),
   authorNickname: z.string().min(1, '작성자 닉네임은 필수예요.'),
   authorPassword: z.string().min(4, '비밀번호는 최소 4자 이상!'),
+});
+
+export const groupParticipationSchema = z.object({
+  nickname: z.string().min(1, '닉네임 입력은 필수예요!'),
+  password: z.string().min(4, '비밀번호는 최소 4자 이상!'),
 });
