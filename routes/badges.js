@@ -58,7 +58,49 @@ const participantBadges = async (groupId) => {
   }
 }
 
-// /////// 하원님 transaction test 중  //////////
+const exerciseBadges = async (groupId) => {
+  const group = await prisma.group.findUnique({
+    where: { group_id: groupId },
+  });
+  const recordCount = await prisma.exercise.count({
+    where: { group_id: groupId },
+  });
+
+  if (recordCount >= 100 && !group.badges.includes(Badges.RECORD_100)) {
+    await prisma.group.update({
+      where: { group_id: groupId },
+      data: {
+        badges: {
+          push: Badges.RECORD_100,
+        },
+      },
+    });
+  } else if (recordCount < 1 && group.badges.includes(Badges.RECORD_100)) {
+    await prisma.group.update({
+      where: { group_id: groupId },
+      data: {
+        badges: {
+          set: group.badges.filter((badge) => badge !== Badges.RECORD_100),
+        },
+      },
+    });
+  }
+};
+
+
+export default {
+  likeBadges,
+  participantBadges,
+  exerciseBadges
+};
+
+
+
+
+
+
+
+/////// 하원님 transaction  //////////
 
 // export const getBadges = async (groupId) => {
 //   await prisma.$transaction(async (tx) => {
@@ -119,11 +161,3 @@ const participantBadges = async (groupId) => {
 //     }
 //   });
 // };
-
-
-
-export default {
-  likeBadges,
-  participantBadges,
-};
-

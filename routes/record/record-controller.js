@@ -31,6 +31,10 @@ export async function createExercise(req, res) {
     const groupId = parseInt(req.params.groupId, 10);
     const dto = { ...req.body, groupId };
     const newRecord = await RecordService.createExercise(dto);
+
+    //운동 기록 등록 후 운동 배지 갱신
+    await getBadges.exerciseBadges(groupId);
+    
     res.status(201).json(newRecord);
   } catch (error) {
     console.error('ExerciseController.createExercise Error:', error);
