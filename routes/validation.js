@@ -42,6 +42,11 @@ export const createandupdateGroupSchema = z.object({
   ownerPassword: z.string().min(4, '비밀번호는 최소 4자 이상이어야 합니다.'),
 });
 
+export const groupParticipationSchema = z.object({
+  nickname: z.string().min(1, '닉네임 입력은 필수예요!'),
+  password: z.string().min(4, '비밀번호는 최소 4자 이상!'),
+});
+
 export const createRecordSchema = z.object({
   exerciseType: ExerciseTypeEnum,
   description: z.string().min(1, '설명은 비워둘 수 없어요.'),

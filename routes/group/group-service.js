@@ -134,62 +134,6 @@ const unlikeGroup = async (groupId) => {
   return decremented;
 };
 
-const GroupParticipation = async (data, group_id) => {
-  const participation = await prisma.groupUser.create({
-    data: {
-      group_id: group_id,
-      nickname: data.nickname,
-      password: data.password,
-    },
-  });
-
-  const group = await prisma.group.findUniqueOrThrow({
-    where: { group_id: group_id },
-    include: {
-      participants: true,
-    },
-  });
-
-  const response = transformGroup(group);
-  return response;
-};
-
-export const deleteUser = async (groupId, nickname) => {
-  await prisma.$transaction(async (tx) => {
-    const participantUser = await tx.groupUser.findFirst({
-      where: {
-        group_id: groupId,
-        nickname,
-      },
-      select: {
-        participant_id: true,
-      },
-    });
-    const recordCount = await tx.exercise.count({
-      where: {
-        group_user_id: participantUser.participant_id,
-      },
-    });
-
-    await tx.groupUser.delete({
-      where: {
-        participant_id: participantUser.participant_id,
-      },
-    });
-
-    if (recordCount > 0) {
-      await tx.group.update({
-        where: { group_id: groupId },
-        data: {
-          exercise_count: {
-            decrement: recordCount,
-          },
-        },
-      });
-    }
-  });
-};
-
 function transformGroup(group) {
   return {
     id: group.group_id,
@@ -223,6 +167,4 @@ export default {
   unlikeGroup,
   getGroupList,
   getGroupById,
-  GroupParticipation,
-  deleteUser,
 };
