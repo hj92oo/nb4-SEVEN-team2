@@ -6,6 +6,7 @@ import getBadges from '../badges.js';
 
 const prisma = new PrismaClient();
 
+// 운동 기록 목록 조회
 export async function getExerciseList(req, res) {
   try {
     const groupId = parseInt(req.params.groupId, 10);
@@ -26,15 +27,17 @@ export async function getExerciseList(req, res) {
   }
 }
 
+
+
+// 운동 기록 생성
 export async function createExercise(req, res) {
   try {
-    const groupId = parseInt(req.params.groupId, 10);
-    const dto = { ...req.body, groupId };
-    const newRecord = await RecordService.createExercise(dto);
+    const groupId = parseInt(req.params.groupId, 10);  // 문자로 들어와서 숫자로 변환
+    const newRecord = await RecordService.createExercise(groupId, req.body);
+    await getBadges.exerciseBadges(groupId);
     res.status(201).json(newRecord);
   } catch (error) {
     console.error('ExerciseController.createExercise Error:', error);
     res.status(500).json({ message: '운동 기록 등록에 실패했습니다.' });
   }
 }
-

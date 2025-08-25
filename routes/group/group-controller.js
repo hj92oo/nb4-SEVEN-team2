@@ -125,10 +125,11 @@ export async function deleteUser(req, res) {
     const groupId = parseInt(dto.params.groupId);
     await GroupService.deleteUser(groupId, nickname);
     // console.log('success');
-    await getBadges.participantBadges(groupId); // 참여자 수 뱃지 제거
+    await getBadges.participantBadges(groupId); // 참여자 수 배지 제거
+    await getBadges.exerciseBadges(groupId);  // 기록 수 배지 제거
     res.status(200).json();
   } catch (error) {
-    console.error('GroupController.deleteGroup Error:', error);
-    res.status(500).json({ message: '그룹 삭제에 실패했습니다.' });
+    console.error('GroupController.deleteUser Error:', error);
+    res.status(500).json({ message: '유저 삭제에 실패했습니다.' });
   }
-}
+};
