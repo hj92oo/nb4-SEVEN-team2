@@ -45,7 +45,9 @@ export const checkGroupUser = async (req, res, next) => {
       return res.status(401).json({ message: '등록된 사용자가 아닙니다.' });
     }
     if (groupUser.password !== pwd) {
-      return res.status(401).json({ message: '비밀번호가 일치하지 않습니다.' });
+      return res
+        .status(401)
+        .json({ message: '비밀번호가 일치하지 않을지도요?' });
     }
     // console.log(groupUser);
     next();

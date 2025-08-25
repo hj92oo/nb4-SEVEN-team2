@@ -28,7 +28,7 @@ const createExercise = async (groupId, data) => {
         description,
         time,
         distance,
-        photos: data.photos?.[0] ?? null,
+        photos: data.photos ?? [],
         group_id: groupId,
         group_user_id: groupUser.participant_id,
       },
@@ -186,7 +186,7 @@ const transformExercise = (exercise) => {
     description: exercise.description,
     time: exercise.time,
     distance: exercise.distance,
-    photos: exercise.photos ? [exercise.photos] : [],
+    photos: exercise.photos || [],
     author: {
       id: exercise.group_user.participant_id,
       nickname: exercise.group_user.nickname,

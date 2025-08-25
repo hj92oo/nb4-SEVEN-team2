@@ -24,9 +24,9 @@ const createGroup = async (data) => {
   return response;
 };
 
-const getGroupList = async (page = 1, limit = 6, orderBy, search) => {
+const getGroupList = async (page = 1, limit = 10, orderBy, search) => {
   const safePage = Math.max(1, parseInt(page, 10) || 1);
-  const take = Math.max(1, parseInt(limit, 10) || 6);
+  const take = Math.max(1, parseInt(limit, 10) || 10);
   const skip = (safePage - 1) * take;
 
   let order;
@@ -202,7 +202,7 @@ function transformGroup(group) {
     discordInviteUrl: group.discord_invite_url,
     owner: {
       nickname: group.nickname,
-      id: group.nickname,
+      id: group.participant_id,
       createdAt: group.createdAt,
       updatedAt: group.updatedAt,
     },

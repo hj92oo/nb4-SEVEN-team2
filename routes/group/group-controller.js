@@ -34,10 +34,10 @@ export async function getGroupList(req, res) {
   try {
     validationResult(req).throw();
     const dto = req;
-    const { offset, limit, orderBy, search } = dto.query;
+    const { page, limit, orderBy, search } = dto.query;
     const groups = await GroupService.getGroupList(
-      Number.isNaN(Number(offset)) ? 0 : Number(offset),
-      Number.isNaN(Number(limit)) ? 3 : Number(limit),
+      page,
+      limit,
       orderBy,
       search
     );
