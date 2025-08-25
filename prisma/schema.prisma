@@ -52,7 +52,7 @@ model Exercise {
   description   String?      @db.VarChar(255)
   time          Int
   distance      Int?
-  photos        String?      @db.VarChar(255)
+  photos        String[]
   created_at    DateTime     @default(now())
   updated_at    DateTime     @default(now()) @updatedAt
   group_id      Int

@@ -16,7 +16,7 @@ Github :
 프로젝트 기간: 2025.08.11 ~ 2025.08.29
 기술 스택
 Backend: Express.js, PrismaORM
-Database: MongoDB
+Database: PostgreSQL
 공통 Tool: Git & Github, Discord
 팀원별 구현 기능 상세
 웨인
