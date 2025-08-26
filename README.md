@@ -21,12 +21,15 @@ Notion
 주예찬 ([개인 Github 링크](https://github.com/jooyc135))
 한가윤 ([개인 Github 링크](https://github.com/kimaeong))
 
-프로젝트 소개
+- 프로젝트 소개
 프로그래밍 교육 사이트의 백엔드 시스템 구축
 
-프로젝트 기간: 2025.08.11 ~ 2025.08.29
 
-기술 스택
+
+
+- 프로젝트 기간: 2025.08.11 ~ 2025.08.29
+
+- 기술 스택
 Backend: Express.js, PrismaORM
 Database: PostgreSQL
 공통 Tool: Git & Github, Discord
@@ -84,7 +87,8 @@ nb4-SEVEN-team2_private-backend
  ┃ ┣ group
  ┃ ┃ ┣ group-controller.js
  ┃ ┃ ┣ group-router.js
- ┃ ┃ ┗ group-service.js
+ ┃ ┃ ┣ group-service.js
+ ┃ ┃ ┗ participants.js
  ┃ ┣ participants
  ┃ ┃ ┣ participants-controller.js
  ┃ ┃ ┗ participants-service.js
