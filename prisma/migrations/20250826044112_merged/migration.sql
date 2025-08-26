@@ -17,7 +17,6 @@ CREATE TABLE "public"."Group" (
     "discord_webhook_url" TEXT,
     "discord_invite_url" TEXT,
     "exercise_count" INTEGER NOT NULL DEFAULT 0,
-    "total" INTEGER,
     "likeCount" INTEGER DEFAULT 0,
     "badges" "public"."Badges"[] DEFAULT ARRAY[]::"public"."Badges"[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

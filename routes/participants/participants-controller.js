@@ -33,6 +33,7 @@ export async function deleteUser(req, res) {
     const groupId = parseInt(dto.params.groupId);
     await ParticipantsService.deleteUser(groupId, nickname);
     await getBadges.participantBadges(groupId); // 참여자 수 뱃지 제거
+    await getBadges.recordBadges(groupId); // 기록 수 배지 제거
     res.status(200).json();
   } catch (error) {
     console.error('GroupController.deleteGroup Error:', error);

@@ -42,7 +42,7 @@ export const checkGroupUser = async (req, res, next) => {
       },
     });
     if (!groupUser) {
-      return res.status(404).json({ message: '등록된 사용자가 아닙니다.' });
+      return res.status(404).json({ message: '등록된 사용자가 아니에요.' });
     }
     if (groupUser.password !== pwd) {
       return res
@@ -61,15 +61,20 @@ export const checkNicknameDuplicate = async (req, res, next) => {
   const { groupId } = req.params;
   const { nickname } = req.body;
 
-  const existing = await prisma.groupUser.findFirst({
-    where: { group_id: parseInt(groupId), nickname },
-  });
+  try {
+    const existing = await prisma.groupUser.findFirst({
+      where: { group_id: parseInt(groupId), nickname },
+    });
 
-  if (existing) {
-    return res
-      .status(409)
-      .json({ message: '이미 사용하고 있는 닉네임이에요!' });
+    if (existing) {
+      return res
+        .status(409)
+        .json({ message: '이미 사용하고 있는 닉네임이에요!' });
+    }
+
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '서버 오류가 발생했습니다.' });
   }
-
-  next();
 };
