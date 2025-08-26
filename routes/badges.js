@@ -71,7 +71,7 @@ const participantBadges = async (groupId) => {
 };
 
 //3. 운동 기록 100개 이상 시, 배지 획득 코드
-const exerciseBadges = async (groupId) => {
+const recordBadges = async (groupId) => {
   const group = await prisma.group.findUnique({
     where: { group_id: groupId },
   });
@@ -104,7 +104,7 @@ const exerciseBadges = async (groupId) => {
 export default {
   likeBadges,
   participantBadges,
-  exerciseBadges,
+  recordBadges,
 };
 
 /////// ver2. transaction (작성자 : 하원님) //////////

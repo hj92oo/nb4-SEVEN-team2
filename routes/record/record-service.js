@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const prisma = new PrismaClient();
 
-const createExercise = async (groupId, data) => {
+const createRecord = async (groupId, data) => {
   const {
     exerciseType,
     description,
@@ -21,7 +21,7 @@ const createExercise = async (groupId, data) => {
     },
   });
 
-  const [newExercise, updatedGroup] = await prisma.$transaction([
+  const [newRecord, updatedGroup] = await prisma.$transaction([
     prisma.exercise.create({
       data: {
         exerciseType: ExerciseType[exerciseType.toUpperCase()],
@@ -58,14 +58,14 @@ const createExercise = async (groupId, data) => {
   ]);
 
   if (updatedGroup && updatedGroup.discord_webhook_url) {
-    await sendDiscordwebhook(updatedGroup.discord_webhook_url, newExercise);
+    await sendDiscordwebhook(updatedGroup.discord_webhook_url, newRecord);
   }
 
-  const response = transformExercise(newExercise);
+  const response = transformRecord(newRecord);
   return response;
 };
 
-export async function sendDiscordwebhook(webhookUrl, newExercise) {
+export async function sendDiscordwebhook(webhookUrl, newRecord) {
   const exerciseTypeLabels = {
     RUN: '러닝',
     BIKE: '사이클링',
@@ -78,7 +78,7 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
     SWIM: 0x0000ff, // 파랑
   };
 
-  const totalSeconds = newExercise.time;
+  const totalSeconds = newRecord.time;
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
 
@@ -91,14 +91,14 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
       content: `새로운 운동 기록이 등록되었습니다!`,
       embeds: [
         {
-          title: `${newExercise.group_user.nickname}님의 새로운 기록`,
-          color: exerciseTypeColors[newExercise.exerciseType] || 0xffffff,
+          title: `${newRecord.group_user.nickname}님의 새로운 기록`,
+          color: exerciseTypeColors[newRecord.exerciseType] || 0xffffff,
           fields: [
             {
               name: '운동 종류',
               value:
-                exerciseTypeLabels[newExercise.exerciseType] ||
-                newExercise.exerciseType,
+                exerciseTypeLabels[newRecord.exerciseType] ||
+                newRecord.exerciseType,
               inline: true,
             },
             {
@@ -108,7 +108,7 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
             },
             {
               name: '거리',
-              value: `${newExercise.distance}km`,
+              value: `${newRecord.distance}km`,
               inline: true,
             },
           ],
@@ -123,7 +123,7 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
   }
 }
 
-const getExerciseList = async (
+const getRecordList = async (
   groupId,
   { page = 1, limit = 10, orderBy, search } = {}
 ) => {
@@ -155,7 +155,7 @@ const getExerciseList = async (
       break;
   }
 
-  const exercises = await prisma.exercise.findMany({
+  const records = await prisma.exercise.findMany({
     where,
     orderBy: order,
     skip,
@@ -170,16 +170,16 @@ const getExerciseList = async (
     },
   });
 
-  const transformedExercises = exercises.map(transformExercise);
+  const transformedRecords = records.map(transformRecord);
   const total = await prisma.exercise.count({ where });
 
   return {
-    data: transformedExercises,
+    data: transformedRecords,
     total: total,
   };
 };
 
-const transformExercise = (exercise) => {
+const transformRecord = (exercise) => {
   return {
     id: exercise.exercise_id,
     exerciseType: exercise.exerciseType,
@@ -197,6 +197,6 @@ const transformExercise = (exercise) => {
 };
 
 export default {
-  createExercise,
-  getExerciseList,
+  createRecord,
+  getRecordList,
 };

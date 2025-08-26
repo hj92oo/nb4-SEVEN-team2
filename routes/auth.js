@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const checkGroupPassword = async (req, res, next) => {
-  const group_id = parseInt(req.params.groupId);
+  const group_id = Number(req.params.groupId);
   const { ownerPassword } = req.body;
   try {
     const targetGroup = await prisma.group.findFirst({
@@ -37,7 +37,7 @@ export const checkGroupUser = async (req, res, next) => {
   try {
     const groupUser = await prisma.groupUser.findFirst({
       where: {
-        group_id: parseInt(groupId),
+        group_id: parseInt(groupId, 10),
         nickname: nick,
       },
     });

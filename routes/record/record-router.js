@@ -1,5 +1,5 @@
 import express from 'express';
-import { createExercise, getExerciseList } from './record-controller.js';
+import { createRecord, getRecordList } from './record-controller.js';
 import { checkGroupUser } from '../auth.js';
 import {
   createRecordSchema,
@@ -15,13 +15,13 @@ router
   .get(
     validateZod(checkGroupIdSchema, 'params'),
     validateZod(checkPaginationSchema, 'query'),
-    getExerciseList
+    getRecordList
   )
   .post(
     validateZod(checkGroupIdSchema, 'params'),
     validateZod(createRecordSchema),
     checkGroupUser,
-    createExercise
+    createRecord
   );
 
 export default router;

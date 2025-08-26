@@ -16,7 +16,7 @@ Github :
 프로젝트 기간: 2025.08.11 ~ 2025.08.29
 기술 스택
 Backend: Express.js, PrismaORM
-Database: MongoDB
+Database: PostgreSQL
 공통 Tool: Git & Github, Discord
 팀원별 구현 기능 상세
 웨인
@@ -57,7 +57,7 @@ CRUD 기능
 (자신이 개발한 기능에 대한 사진이나 gif 파일 첨부)
 
 학생 시간 정보 관리 API
-학생별 시간 정보를 조회하는 API 구현
+학생별 시간 정보를 조회하는 API 구현 
 fetch(GET)을 통해 실시간 접속 현황을 관리
 수정 및 탈퇴 API
 fetch(PATCH, DELETE)을 사용하여 수강생의 개인정보 수정 및 탈퇴 처리
