@@ -9,7 +9,7 @@ import {
   unlikeGroup,
 } from './group-controller.js';
 import {
-  group_participation,
+  addUser,
   deleteUser,
 } from '../participants/participants-controller.js';
 import {
@@ -51,11 +51,7 @@ router
 // 참여, 참여 취소 라우터
 router
   .route('/:groupId/participants')
-  .post(
-    validateZod(groupNickAndPwdSchema),
-    checkNicknameDuplicate,
-    group_participation
-  )
+  .post(validateZod(groupNickAndPwdSchema), checkNicknameDuplicate, addUser)
   .delete(validateZod(groupNickAndPwdSchema), checkGroupUser, deleteUser);
 
 // 좋아요, 좋아요 취소 라우터
