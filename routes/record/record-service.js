@@ -1,59 +1,9 @@
 import { PrismaClient, ExerciseType } from '@prisma/client';
 import axios from 'axios';
-import { group } from 'console';
-import { parse } from 'path';
 
 const prisma = new PrismaClient();
 
-export const getExerciseList = async (
-  groupId,
-  { page = 1,
-    limit = 6,
-    orderBy,
-    search } = {
-    }) => {
-      const pageNum = parseInt(page, 10) >= 1 ? parseInt(page, 10) : 1;
-      const limitNum = parseInt(limit, 10) ? parseInt(limit, 10) : 6;
-      const offset = parseInt((pageNum - 1) * limitNum, 10);
-
-  let order;
-  switch (orderBy) {
-    case 'time':
-      order = { time: 'desc' };
-      break;
-    case 'createdAt':
-    default:
-      order = { created_at: 'desc' };
-  }
-  const where = {
-    group_id: groupId,
-    ...(search
-      ? {
-        OR: [
-          { group_user: { nickname: { equals: String(search), mode: 'insensitive'  // 닉네임은 일치 검색
-          } } },
-        ],
-      }
-      : {}),
-  };
-   const records = await prisma.exercise.findMany({
-    where,
-    orderBy: order,
-    skip: offset,
-    take: limitNum,
-    include: {
-      group_user: true,
-      group: true,
-    },
-  });
-  const total = await prisma.exercise.count({
-    where: { group_id: groupId },
-  });
-  const response = records.map(transformExercise);
-  return { data: response, total: total };
-};
-
-const createExercise = async (groupId, data) => {
+const createRecord = async (groupId, data) => {
   const {
     exerciseType,
     description,
@@ -71,7 +21,7 @@ const createExercise = async (groupId, data) => {
     },
   });
 
-  const [newExercise, updatedGroup] = await prisma.$transaction([
+  const [newRecord, updatedGroup] = await prisma.$transaction([
     prisma.exercise.create({
       data: {
         exerciseType: ExerciseType[exerciseType.toUpperCase()],
@@ -108,14 +58,14 @@ const createExercise = async (groupId, data) => {
   ]);
 
   if (updatedGroup && updatedGroup.discord_webhook_url) {
-    await sendDiscordwebhook(updatedGroup.discord_webhook_url, newExercise);
+    await sendDiscordwebhook(updatedGroup.discord_webhook_url, newRecord);
   }
 
-  const response = transformExercise(newExercise);
+  const response = transformRecord(newRecord);
   return response;
 };
 
-export async function sendDiscordwebhook(webhookUrl, newExercise) {
+export async function sendDiscordwebhook(webhookUrl, newRecord) {
   const exerciseTypeLabels = {
     RUN: '러닝',
     BIKE: '사이클링',
@@ -128,7 +78,7 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
     SWIM: 0x0000ff, // 파랑
   };
 
-  const totalSeconds = newExercise.time;
+  const totalSeconds = newRecord.time;
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
 
@@ -141,14 +91,14 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
       content: `새로운 운동 기록이 등록되었습니다!`,
       embeds: [
         {
-          title: `${newExercise.group_user.nickname}님의 새로운 기록`,
-          color: exerciseTypeColors[newExercise.exerciseType] || 0xffffff,
+          title: `${newRecord.group_user.nickname}님의 새로운 기록`,
+          color: exerciseTypeColors[newRecord.exerciseType] || 0xffffff,
           fields: [
             {
               name: '운동 종류',
               value:
-                exerciseTypeLabels[newExercise.exerciseType] ||
-                newExercise.exerciseType,
+                exerciseTypeLabels[newRecord.exerciseType] ||
+                newRecord.exerciseType,
               inline: true,
             },
             {
@@ -158,7 +108,7 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
             },
             {
               name: '거리',
-              value: `${newExercise.distance}km`,
+              value: `${newRecord.distance}km`,
               inline: true,
             },
           ],
@@ -173,12 +123,67 @@ export async function sendDiscordwebhook(webhookUrl, newExercise) {
   }
 }
 
+const getRecordList = async (
+  groupId,
+  { page = 1, limit = 10, orderBy, search } = {}
+) => {
+  const safePage = Math.max(1, parseInt(page, 10) || 1);
+  const take = Math.max(1, parseInt(limit, 10) || 10);
+  const skip = (safePage - 1) * take;
 
-const transformExercise = (exercise) => {
+  const where = search
+    ? {
+        group_id: groupId,
+        group_user: {
+          nickname: {
+            equals: String(search),
+            mode: 'insensitive',
+          },
+        },
+      }
+    : { group_id: groupId };
+
+  let order = {};
+
+  switch (orderBy) {
+    case 'time':
+      order = { time: 'desc' };
+      break;
+    case 'createdAt':
+    default:
+      order = { created_at: 'desc' };
+      break;
+  }
+
+  const records = await prisma.exercise.findMany({
+    where,
+    orderBy: order,
+    skip,
+    take,
+    include: {
+      group_user: {
+        select: {
+          participant_id: true,
+          nickname: true,
+        },
+      },
+    },
+  });
+
+  const transformedRecords = records.map(transformRecord);
+  const total = await prisma.exercise.count({ where });
+
+  return {
+    data: transformedRecords,
+    total: total,
+  };
+};
+
+const transformRecord = (exercise) => {
   return {
     id: exercise.exercise_id,
-    exerciseType: exercise.ExerciseType,  // 스키마 대문자 > 소문자 변환
-    description: exercise.description || null,
+    exerciseType: exercise.exerciseType,
+    description: exercise.description,
     time: exercise.time,
     distance: exercise.distance,
     photos: exercise.photos || [],
@@ -192,6 +197,6 @@ const transformExercise = (exercise) => {
 };
 
 export default {
-  createExercise,
-  getExerciseList,
+  createRecord,
+  getRecordList,
 };

@@ -24,12 +24,11 @@ const createGroup = async (data) => {
   return response;
 };
 
-export const getGroupList = async (
-  page,
-  limit,
-  orderBy,
-  search
-) => {
+const getGroupList = async (page = 1, limit = 10, orderBy, search) => {
+  const safePage = Math.max(1, parseInt(page, 10) || 1);
+  const take = Math.max(1, parseInt(limit, 10) || 10);
+  const skip = (safePage - 1) * take;
+
   let order;
   switch (orderBy) {
     case 'likeCount':
@@ -48,12 +47,12 @@ export const getGroupList = async (
         OR: [{ group_name: { contains: String(search), mode: 'insensitive' } }],
       }
     : {};
-  const offset = (parseInt(page) - 1) * parseInt(limit) >= 0 ? (parseInt(page) - 1) * parseInt(limit) : 0;
+
   const groups = await prisma.group.findMany({
     where,
     orderBy: order,
-    skip: parseInt(offset),
-    take: parseInt(limit),
+    skip,
+    take,
     include: {
       participants: true,
     },
@@ -134,62 +133,6 @@ const unlikeGroup = async (groupId) => {
   return decremented;
 };
 
-const GroupParticipation = async (data, group_id) => {
-  const participation = await prisma.groupUser.create({
-    data: {
-      group_id: group_id,
-      nickname: data.nickname,
-      password: data.password,
-    },
-  });
-
-  const group = await prisma.group.findUniqueOrThrow({
-    where: { group_id: group_id },
-    include: {
-      participants: true,
-    },
-  });
-
-  const response = transformGroup(group);
-  return response;
-};
-
-export const deleteUser = async (groupId, nickname) => {
-  await prisma.$transaction(async (tx) => {
-    const participantUser = await tx.groupUser.findFirst({
-      where: {
-        group_id: groupId,
-        nickname,
-      },
-      select: {
-        participant_id: true,
-      },
-    });
-    const recordCount = await tx.exercise.count({
-      where: {
-        group_user_id: participantUser.participant_id,
-      },
-    });
-
-    await tx.groupUser.delete({
-      where: {
-        participant_id: participantUser.participant_id,
-      },
-    });
-
-    if (recordCount > 0) {
-      await tx.group.update({
-        where: { group_id: groupId },
-        data: {
-          exercise_count: {
-            decrement: recordCount,
-          },
-        },
-      });
-    }
-  });
-};
-
 function transformGroup(group) {
   return {
     id: group.group_id,
@@ -201,7 +144,7 @@ function transformGroup(group) {
     discordInviteUrl: group.discord_invite_url,
     owner: {
       nickname: group.nickname,
-      id: group.nickname,
+      id: group.participant_id,
       createdAt: group.createdAt,
       updatedAt: group.updatedAt,
     },
@@ -223,6 +166,4 @@ export default {
   unlikeGroup,
   getGroupList,
   getGroupById,
-  GroupParticipation,
-  deleteUser,
 };

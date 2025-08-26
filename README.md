@@ -1,26 +1,26 @@
-# Team 2, seven 
+# Team 2, seven
 
 ---
 
 ## 프로젝트 계획서
-Notion 
--  [바로가기](https://www.notion.so/Part2-Team2_-24c901367b6a80e6bf9ace444980837a)
-Github
+
+Notion
+
+- [바로가기](https://www.notion.so/Part2-Team2_-24c901367b6a80e6bf9ace444980837a)
+  Github
 - [백엔드](https://github.com/hj92oo/nb4-SEVEN-team2-backend)
 - [프론트엔드](https://github.com/hj92oo/nb4-SEVEN-team2-frontend)
 
 ---
 
 ## 팀원 구성
+
 김현정 (팀장) (개인 Github 링크)
 심하원 (개인 Github 링크)
 이봉준 (개인 Github 링크)
 주예찬 (개인 Github 링크)
 한가윤 (개인 Github 링크)
 
-<<<<<<< HEAD
----
-=======
 프로젝트 소개
 프로그래밍 교육 사이트의 백엔드 시스템 구축
 프로젝트 기간: 2025.08.11 ~ 2025.08.29
@@ -31,18 +31,19 @@ Database: PostgreSQL
 팀원별 구현 기능 상세
 웨인
 (자신이 개발한 기능에 대한 사진이나 gif 파일 첨부)
->>>>>>> origin/Branch2_Record
 
 ## 프로젝트 소개
+
 운동 인증 커뮤니티 서비스
 
---- 
+---
 
 ## 프로젝트 기간 2025.08.11 ~ 2025.08.29
 
 ---
 
 ## 기술 스택
+
 **Backend**: Express.js, PrismaORM
 **Database**: Postgresql
 **공통 Tool**: Git & Github, Discord
@@ -50,12 +51,15 @@ Database: PostgreSQL
 ---
 
 ## 개발 파트
+
 개발을 총 8파트로 나누어서 진행
 
 ## 팀원별 구현 기능 상세
+
 A, B 팀으로 나누어서 여러 파트를 병렬적으로 진행
 
 ### 김현정 (A팀)
+
 -
 -
 
@@ -69,9 +73,8 @@ A, B 팀으로 나누어서 여러 파트를 병렬적으로 진행
 
 ---
 
-
-
 ## 파일 구조
+
 ```
 nb4-SEVEN-team2_private-backend
  ┣ middlewares
@@ -104,8 +107,9 @@ uploads
 ---
 
 ## 구현 홈페이지
+
 (개발한 홈페이지에 대한 링크 게시)
 
-
 ## 프로젝트 회고록
+
 (제작한 발표자료 링크 혹은 첨부파일 첨부)

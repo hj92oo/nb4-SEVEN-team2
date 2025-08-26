@@ -29,8 +29,7 @@ const likeBadges = async (groupId) => {
       },
     });
   }
-}
-
+};
 
 // 2. 참여자 10명 이상 시, 배지 획득 코드
 const participantBadges = async (groupId) => {
@@ -42,7 +41,10 @@ const participantBadges = async (groupId) => {
   });
 
   // 참여자 배지 획득
-  if (participantCounts >= 10 && !group.badges.includes(Badges.PARTICIPATION_10)) {
+  if (
+    participantCounts >= 10 &&
+    !group.badges.includes(Badges.PARTICIPATION_10)
+  ) {
     await prisma.group.update({
       where: { group_id: groupId },
       data: {
@@ -50,22 +52,26 @@ const participantBadges = async (groupId) => {
           push: Badges.PARTICIPATION_10,
         },
       },
-    });  // 참여자 배지 제거
-  } else if (participantCounts < 10 && group.badges.includes(Badges.PARTICIPATION_10)) {
+    }); // 참여자 배지 제거
+  } else if (
+    participantCounts < 10 &&
+    group.badges.includes(Badges.PARTICIPATION_10)
+  ) {
     await prisma.group.update({
       where: { group_id: groupId },
       data: {
         badges: {
-          set: group.badges.filter((badge) => badge !== Badges.PARTICIPATION_10)
+          set: group.badges.filter(
+            (badge) => badge !== Badges.PARTICIPATION_10
+          ),
         },
       },
     });
   }
-}
-
+};
 
 //3. 운동 기록 100개 이상 시, 배지 획득 코드
-const exerciseBadges = async (groupId) => {
+const recordBadges = async (groupId) => {
   const group = await prisma.group.findUnique({
     where: { group_id: groupId },
   });
@@ -95,18 +101,11 @@ const exerciseBadges = async (groupId) => {
   }
 };
 
-
 export default {
   likeBadges,
   participantBadges,
-  exerciseBadges
+  recordBadges,
 };
-
-
-
-
-
-
 
 /////// ver2. transaction (작성자 : 하원님) //////////
 

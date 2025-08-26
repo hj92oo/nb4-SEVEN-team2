@@ -7,13 +7,21 @@ import {
   deleteGroup,
   likeGroup,
   unlikeGroup,
+} from './group-controller.js';
+import {
   group_participation,
   deleteUser,
-} from './group-controller.js';
-import { checkGroupPassword, checkGroupUser } from '../auth.js';
+} from '../participants/participants-controller.js';
+import {
+  checkGroupPassword,
+  checkGroupUser,
+  checkNicknameDuplicate,
+} from '../auth.js';
 import {
   createandupdateGroupSchema,
-  groupParticipationSchema,
+  groupNickAndPwdSchema,
+  checkPaginationSchema,
+  checkGroupIdSchema,
 } from '../validation.js';
 import { validateZod } from '../../middlewares/validateZod.js';
 
@@ -23,26 +31,37 @@ const router = express.Router();
 router
   .route('/')
   .post(validateZod(createandupdateGroupSchema), createGroup)
-  .get(getGroupList);
+  .get(validateZod(checkPaginationSchema, 'query'), getGroupList);
 
 // 그룹 수정, 상세 조회, 삭제 라우터
 router
   .route('/:groupId')
-  .get(getGroupById)
+  .get(validateZod(checkGroupIdSchema, 'params'), getGroupById)
   .patch(
-    checkGroupPassword,
     validateZod(createandupdateGroupSchema),
+    checkGroupPassword,
     updateGroup
   )
-  .delete(checkGroupPassword, deleteGroup);
+  .delete(
+    validateZod(checkGroupIdSchema, 'params'),
+    checkGroupPassword,
+    deleteGroup
+  );
 
 // 참여, 참여 취소 라우터
 router
   .route('/:groupId/participants')
-  .post(validateZod(groupParticipationSchema), group_participation)
-  .delete(checkGroupUser, validateZod(groupParticipationSchema), deleteUser);
+  .post(
+    validateZod(groupNickAndPwdSchema),
+    checkNicknameDuplicate,
+    group_participation
+  )
+  .delete(validateZod(groupNickAndPwdSchema), checkGroupUser, deleteUser);
 
 // 좋아요, 좋아요 취소 라우터
-router.route('/:groupId/likes').post(likeGroup).delete(unlikeGroup);
+router
+  .route('/:groupId/likes')
+  .post(validateZod(checkGroupIdSchema, 'params'), likeGroup)
+  .delete(validateZod(checkGroupIdSchema, 'params'), unlikeGroup);
 
 export default router;
