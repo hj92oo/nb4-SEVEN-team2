@@ -7,9 +7,11 @@ import {
   deleteGroup,
   likeGroup,
   unlikeGroup,
+} from './group-controller.js';
+import {
   group_participation,
   deleteUser,
-} from './group-controller.js';
+} from '../participants/participants-controller.js';
 import {
   checkGroupPassword,
   checkGroupUser,

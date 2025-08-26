@@ -70,4 +70,6 @@ export const checkNicknameDuplicate = async (req, res, next) => {
       .status(409)
       .json({ message: '이미 사용하고 있는 닉네임이에요!' });
   }
+
+  next();
 };

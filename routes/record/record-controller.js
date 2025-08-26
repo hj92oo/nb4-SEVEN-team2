@@ -1,6 +1,6 @@
-import RecordService from './record-service.js';
-import { getBadges } from '../badges.js';
 import { PrismaClient } from '@prisma/client';
+import RecordService from './record-service.js';
+import getBadges from '../badges.js';
 
 const prisma = new PrismaClient();
 
@@ -10,7 +10,7 @@ export async function createExercise(req, res) {
 
   try {
     const newRecord = await RecordService.createExercise(groupId, exerciseData);
-    await getBadges(groupId);
+    await getBadges.exerciseBadges(groupId);
     res.status(201).json(newRecord);
   } catch (error) {
     console.error('ExerciseController.createExercise Error:', error);

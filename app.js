@@ -8,6 +8,7 @@ import recordRoutes from './routes/record/record-router.js';
 import imageRoutes from './routes/images.js';
 
 const app = express();
+
 const PORT = process.env.PORT || 3001;
 
 // 상태코드 등 체크
@@ -45,6 +46,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use('/groups', recordRoutes);
 app.use('/groups', groupRoutes);
 app.use('/images', imageRoutes);
+app.use('/groups/images', imageRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

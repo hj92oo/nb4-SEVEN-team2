@@ -50,7 +50,7 @@ model Exercise {
   group_user_id Int
   exerciseType  ExerciseType
   description   String?      @db.VarChar(255)
-  time          Int?
+  time          Int
   distance      Int?
   photos        String[]
   created_at    DateTime     @default(now())
