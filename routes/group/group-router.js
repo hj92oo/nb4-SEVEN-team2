@@ -11,7 +11,10 @@ import {
   deleteUser,
 } from './group-controller.js';
 import { checkGroupPassword, checkGroupUser } from '../auth.js';
-import { createandupdateGroupSchema } from '../validation.js';
+import {
+  createandupdateGroupSchema,
+  groupParticipationSchema,
+} from '../validation.js';
 import { validateZod } from '../../middlewares/validateZod.js';
 
 const router = express.Router();
@@ -36,8 +39,8 @@ router
 // 참여, 참여 취소 라우터
 router
   .route('/:groupId/participants')
-  .post(group_participation)
-  .delete(checkGroupUser, deleteUser);
+  .post(validateZod(groupParticipationSchema), group_participation)
+  .delete(checkGroupUser, validateZod(groupParticipationSchema), deleteUser);
 
 // 좋아요, 좋아요 취소 라우터
 router.route('/:groupId/likes').post(likeGroup).delete(unlikeGroup);
