@@ -86,6 +86,9 @@ nb4-SEVEN-team2_private-backend
  ┃ ┃ ┣ group-router.js
  ┃ ┃ ┣ group-service.js
  ┃ ┃ ┗ participants.js
+ ┃ ┣ participants
+ ┃ ┃ ┣ participants-controller.js
+ ┃ ┃ ┗ participants-service.js
  ┃ ┣ record
  ┃ ┃ ┣ record-controller.js
  ┃ ┃ ┣ record-router.js
