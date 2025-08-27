@@ -1,3 +1,6 @@
+
+
+
 export const validateZod =
   (schema, target = 'body') =>
   (req, res, next) => {
@@ -8,7 +11,6 @@ export const validateZod =
       next();
     } catch (e) {
       console.error(e);
-
       if (e.name === 'ZodError' && e.issues) {
         const errors = e.issues.map((i) => ({
           path: Array.isArray(i.path) ? i.path.join('.') : i.path,
@@ -16,7 +18,6 @@ export const validateZod =
         }));
         return res.status(400).json(errors);
       }
-
       return res
         .status(500)
         .json([
