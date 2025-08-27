@@ -18,7 +18,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js",
     "start": "node app.js",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "migrate": "prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
