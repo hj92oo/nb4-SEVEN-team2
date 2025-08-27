@@ -105,14 +105,6 @@ const likeGroup = async (groupId) => {
   return incremented;
 };
 
-// const unlikeGroup = async (groupId) => {
-//   const decremented = await prisma.group.update({
-//     where: { group_id: groupId },
-//     data: { likeCount: { decrement: 1 } },
-//   });
-//   return decremented;
-// };
-
 const unlikeGroup = async (groupId) => {
   const decremented = await prisma.$transaction(async (tx) => {
     const group = await tx.group.findUnique({

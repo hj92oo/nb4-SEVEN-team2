@@ -6,9 +6,16 @@ import { fileURLToPath } from 'url';
 import groupRoutes from './routes/group/group-router.js';
 import recordRoutes from './routes/record/record-router.js';
 import imageRoutes from './routes/images.js';
+import errorHandler from './middlewares/errorHandler.js';
+import { body, validationResult } from 'express-validator';
+import { z } from 'zod';
+import { PrismaClient } from '@prisma/client';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const prisma = new PrismaClient();
+
+console.log('현재 NODE_ENV:', process.env.NODE_ENV);
 
 // 상태코드 등 체크
 app.use((req, res, next) => {
@@ -45,6 +52,8 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use('/groups', recordRoutes);
 app.use('/groups', groupRoutes);
 app.use('/images', imageRoutes);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
