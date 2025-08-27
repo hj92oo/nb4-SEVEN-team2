@@ -12,7 +12,7 @@ import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 const prisma = new PrismaClient();
 
 console.log('현재 NODE_ENV:', process.env.NODE_ENV);
