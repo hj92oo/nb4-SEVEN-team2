@@ -7,13 +7,9 @@ import groupRoutes from './routes/group/group-router.js';
 import recordRoutes from './routes/record/record-router.js';
 import imageRoutes from './routes/images.js';
 import errorHandler from './middlewares/errorHandler.js';
-import { body, validationResult } from 'express-validator';
-import { z } from 'zod';
-import { PrismaClient } from '@prisma/client';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const prisma = new PrismaClient();
 
 console.log('현재 NODE_ENV:', process.env.NODE_ENV);
 
