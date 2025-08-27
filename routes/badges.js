@@ -18,7 +18,7 @@ const likeBadges = async (groupId) => {
         },
       },
     });
-  } else if (group.likeCount < 100 && group.badges.includes(Badges.LIKE_100)) {
+  } else if (group.likeCount  < 100 && group.badges.includes(Badges.LIKE_100)) {
     await prisma.group.update({
       where: { group_id: groupId },
       data: {
