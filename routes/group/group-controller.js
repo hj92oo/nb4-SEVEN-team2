@@ -6,44 +6,44 @@ const prisma = new PrismaClient();
 
 class GroupController {
   async createGroup(req, res) {
-    const newGroup = await GroupService.createGroup(req.dto.body);
+    const newGroup = await GroupService.createGroup(req.body);
     res.status(201).json(newGroup);
   }
 
   async updateGroup(req, res) {
-    const groupId = parseInt(req.dto.params.groupId);
-    const updatedGroup = await GroupService.updateGroup(groupId, req.dto.body);
+    const groupId = parseInt(req.params.groupId);
+    const updatedGroup = await GroupService.updateGroup(groupId, req.body);
     res.status(200).json(updatedGroup);
   }
 
   async deleteGroup(req, res) {
-    const groupId = parseInt(req.dto.params.groupId);
+    const groupId = parseInt(req.params.groupId);
     await GroupService.deleteGroup(groupId);
     res.status(204).send();
   }
 
   async likeGroup(req, res) {
-    const groupId = parseInt(req.dto.params.groupId);
+    const groupId = parseInt(req.params.groupId);
     const updated = await GroupService.likeGroup(groupId);
     await getBadges.likeBadges(groupId);
     res.status(200).json(updated);
   }
 
   async unlikeGroup(req, res) {
-    const groupId = parseInt(req.dto.params.groupId);
+    const groupId = parseInt(req.params.groupId);
     const updated = await GroupService.unlikeGroup(groupId);
     await getBadges.likeBadges(groupId);
     res.status(200).json(updated);
   }
 
   async getGroupById(req, res) {
-    const groupId = parseInt(req.dto.params.groupId);
+    const groupId = parseInt(req.params.groupId);
     const group = await GroupService.getGroupById(groupId);
     res.status(200).json(group);
   }
 
   async getGroupList(req, res) {
-    const { page, limit, orderBy, search } = req.dto.query;
+    const { page, limit, orderBy, search } = req.query;
     const groups = await GroupService.getGroupList(
       page,
       limit,
