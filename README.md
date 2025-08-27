@@ -77,7 +77,9 @@ A, B 팀으로 나누어서 여러 파트를 병렬적으로 진행
 ```
 nb4-SEVEN-team2_private-backend
  ┣ middlewares
- ┃ ┗ validateZod.js
+ ┃ ┣ validateZod.js
+ ┃ ┣ validateRequest.js
+ ┃ ┗ errorHandler.js
  ┣ prisma
  ┃  ┗ schema.prisma
  ┣ routes
@@ -102,7 +104,7 @@ nb4-SEVEN-team2_private-backend
 .gitignore
 package.json
 README.md
-uploads
+
 ```
 
 ---

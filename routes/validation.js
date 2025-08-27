@@ -1,12 +1,17 @@
 import { z } from 'zod';
 
 // 🔹 enum 매핑
-// const ExerciseTypeEnum = z.enum(['run', 'bike', 'swim']);
 const ExerciseTypeEnum = ['run', 'bike', 'swim'];
-const OrderByEnum = z.enum(['likeCount', 'participantCount', 'createdAt']);
+const OrderByEnum = z.enum([
+  'likeCount',
+  'participantCount',
+  'createdAt',
+  'time',
+]);
+const DurationEnum = z.enum(['monthly', 'weekly']);
 
 // 그룹 등록
-export const createandupdateGroupSchema = z.object({
+const createandupdateGroupSchema = z.object({
   name: z.string().min(1, '그룹명은 비워둘 수 없어요.'),
   description: z.string().min(1, '설명은 비워둘 수 없어요.'),
   photoUrl: z.string().optional(),
@@ -24,7 +29,7 @@ export const createandupdateGroupSchema = z.object({
 });
 
 // 기록 등록
-export const createRecordSchema = z.object({
+const createRecordSchema = z.object({
   exerciseType: z.string().refine((val) => ExerciseTypeEnum.includes(val), {
     message: '운동 종류가 올바르지 않아요!',
   }),
@@ -54,13 +59,13 @@ export const createRecordSchema = z.object({
 });
 
 // 그룹 참여, 탈퇴(닉네임, 패스워드)
-export const groupNickAndPwdSchema = z.object({
+const groupNickAndPwdSchema = z.object({
   nickname: z.string().trim().min(1, '닉네임 입력은 필수예요!'),
   password: z.string().trim().min(4, '비밀번호는 최소 4자 이상!'),
 });
 
 // 목록 조회(페이지, 리밋, 오더바이, 서치) // req.query
-export const checkPaginationSchema = z.object({
+const checkPaginationSchema = z.object({
   page: z.coerce.number().int().positive().optional(),
   limit: z.coerce.number().int().positive().optional(),
   orderBy: OrderByEnum.optional(),
@@ -68,6 +73,19 @@ export const checkPaginationSchema = z.object({
 });
 
 // id 검사(그룹 상세 조회, 그룹 삭제) // req.params
-export const checkGroupIdSchema = z.object({
+const checkGroupIdSchema = z.object({
   groupId: z.coerce.number().int(),
 });
+
+const checkDurationSchena = z.object({
+  duration: DurationEnum,
+});
+
+export default {
+  createandupdateGroupSchema,
+  createRecordSchema,
+  groupNickAndPwdSchema,
+  checkPaginationSchema,
+  checkGroupIdSchema,
+  checkDurationSchena,
+};

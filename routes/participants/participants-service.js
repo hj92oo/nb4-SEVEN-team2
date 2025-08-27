@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const GroupParticipation = async (data, group_id) => {
+const addUser = async (data, group_id) => {
   const participation = await prisma.groupUser.create({
     data: {
       group_id: group_id,
@@ -22,7 +22,7 @@ export const GroupParticipation = async (data, group_id) => {
   return response;
 };
 
-export const deleteUser = async (groupId, nickname) => {
+const deleteUser = async (groupId, nickname) => {
   await prisma.$transaction(async (tx) => {
     const participantUser = await tx.groupUser.findFirst({
       where: {
@@ -82,3 +82,8 @@ function transformGroup(group) {
     recordCount: group.exercise_count,
   };
 }
+
+export default {
+  addUser,
+  deleteUser,
+};
