@@ -52,6 +52,9 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use('/groups', recordRoutes);
 app.use('/groups', groupRoutes);
 app.use('/images', imageRoutes);
+app.get("/", (req, res) => {
+  res.send("Hello from backend!");
+});
 
 app.use(errorHandler);
 
