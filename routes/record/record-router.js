@@ -1,27 +1,37 @@
 import express from 'express';
-import { createRecord, getRecordList } from './record-controller.js';
-import { checkGroupUser } from '../auth.js';
-import {
-  createRecordSchema,
-  checkGroupIdSchema,
-  checkPaginationSchema,
-} from '../validation.js';
+import RecordController from './record-controller.js';
+import auth from '../auth.js';
+import validation from '../validation.js';
 import { validateZod } from '../../middlewares/validateZod.js';
+import { validateRequest } from '../../middlewares/validateRequest.js';
 
 const router = express.Router();
 
+// 운동 기록 등록, 운동 기록 목록 조회
 router
   .route('/:groupId/records')
   .get(
-    validateZod(checkGroupIdSchema, 'params'),
-    validateZod(checkPaginationSchema, 'query'),
-    getRecordList
+    validateZod(validation.checkGroupIdSchema, 'params'),
+    validateZod(validation.checkPaginationSchema, 'query'),
+    validateRequest,
+    RecordController.getRecordList
   )
   .post(
-    validateZod(checkGroupIdSchema, 'params'),
-    validateZod(createRecordSchema),
-    checkGroupUser,
-    createRecord
+    validateZod(validation.checkGroupIdSchema, 'params'),
+    validateZod(validation.createRecordSchema),
+    auth.checkGroupUser,
+    validateRequest,
+    RecordController.createRecord
+  );
+
+// 랭킹
+router
+  .route('/:groupId/rank')
+  .get(
+    validateZod(validation.checkGroupIdSchema, 'params'),
+    validateZod(validation.checkDurationSchena, 'query'),
+    validateRequest,
+    RecordController.ranking
   );
 
 export default router;

@@ -88,7 +88,8 @@ const updateGroup = async (groupId, data) => {
       tags: data.tags || [],
     },
   });
-  return updatedGroup;
+  const transformedGroup = transformGroup(updatedGroup);
+  return transformedGroup;
 };
 
 const deleteGroup = async (groupId) => {
@@ -125,7 +126,7 @@ const unlikeGroup = async (groupId) => {
   return decremented;
 };
 
-function transformGroup(group) {
+const transformGroup = (group) => {
   return {
     id: group.group_id,
     name: group.group_name,
@@ -148,7 +149,7 @@ function transformGroup(group) {
     updatedAt: group.updatedAt,
     recordCount: group.exercise_count,
   };
-}
+};
 
 export default {
   createGroup,

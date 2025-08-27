@@ -22,17 +22,14 @@ Notion
 한가윤 ([개인 Github 링크](https://github.com/kimaeong))
 
 - 프로젝트 소개
-프로그래밍 교육 사이트의 백엔드 시스템 구축
-
-
-
+  프로그래밍 교육 사이트의 백엔드 시스템 구축
 
 - 프로젝트 기간: 2025.08.11 ~ 2025.08.29
 
 - 기술 스택
-Backend: Express.js, PrismaORM
-Database: PostgreSQL
-공통 Tool: Git & Github, Discord
+  Backend: Express.js, PrismaORM
+  Database: PostgreSQL
+  공통 Tool: Git & Github, Discord
 
 ## 프로젝트 소개
 
@@ -80,15 +77,16 @@ A, B 팀으로 나누어서 여러 파트를 병렬적으로 진행
 ```
 nb4-SEVEN-team2_private-backend
  ┣ middlewares
- ┃ ┗ validateZod.js
+ ┃ ┣ validateZod.js
+ ┃ ┣ validateRequest.js
+ ┃ ┗ errorHandler.js
  ┣ prisma
  ┃  ┗ schema.prisma
  ┣ routes
  ┃ ┣ group
  ┃ ┃ ┣ group-controller.js
  ┃ ┃ ┣ group-router.js
- ┃ ┃ ┣ group-service.js
- ┃ ┃ ┗ participants.js
+ ┃ ┃ ┗ group-service.js
  ┃ ┣ participants
  ┃ ┃ ┣ participants-controller.js
  ┃ ┃ ┗ participants-service.js
@@ -106,7 +104,7 @@ nb4-SEVEN-team2_private-backend
 .gitignore
 package.json
 README.md
-uploads
+
 ```
 
 ---

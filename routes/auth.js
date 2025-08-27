@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const checkGroupPassword = async (req, res, next) => {
-  const group_id = Number(req.params.groupId);
+const checkGroupPassword = async (req, res, next) => {
+  const group_id = parseInt(req.params.groupId, 10);
   const { ownerPassword } = req.body;
   const targetGroup = await prisma.group.findFirst({
     where: { group_id: group_id },
@@ -23,7 +23,7 @@ export const checkGroupPassword = async (req, res, next) => {
   next();
 };
 
-export const checkGroupUser = async (req, res, next) => {
+const checkGroupUser = async (req, res, next) => {
   const { groupId } = req.params;
   const { authorNickname, authorPassword, nickname, password } = req.body;
   const pwd = password ?? authorPassword;
@@ -45,7 +45,7 @@ export const checkGroupUser = async (req, res, next) => {
   next();
 };
 
-export const checkNicknameDuplicate = async (req, res, next) => {
+const checkNicknameDuplicate = async (req, res, next) => {
   const { groupId } = req.params;
   const { nickname } = req.body;
 
@@ -60,4 +60,10 @@ export const checkNicknameDuplicate = async (req, res, next) => {
   }
 
   next();
+};
+
+export default {
+  checkGroupPassword,
+  checkGroupUser,
+  checkNicknameDuplicate,
 };

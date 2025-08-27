@@ -65,7 +65,7 @@ const createRecord = async (groupId, data) => {
   return response;
 };
 
-export async function sendDiscordwebhook(webhookUrl, newRecord) {
+const sendDiscordwebhook = async (webhookUrl, newRecord) => {
   const exerciseTypeLabels = {
     RUN: '러닝',
     BIKE: '사이클링',
@@ -121,7 +121,7 @@ export async function sendDiscordwebhook(webhookUrl, newRecord) {
   } catch (error) {
     console.error('디스코드 알림 전송 실패:', error.message);
   }
-}
+};
 
 const getRecordList = async (
   groupId,
@@ -179,6 +179,54 @@ const getRecordList = async (
   };
 };
 
+const selectRecord = async (groupId, day) => {
+  let startDate;
+  const now = new Date();
+
+  if (day === 'weekly') {
+    const dayOfWeek = now.getDay();
+    const diffToMonday = (dayOfWeek + 6) % 7;
+    startDate = new Date(now);
+    startDate.setDate(now.getDate() - diffToMonday);
+    startDate.setHours(0, 0, 0, 0);
+  } else if (day === 'monthly') {
+    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    startDate.setHours(0, 0, 0, 0);
+  }
+
+  const records = await prisma.exercise.findMany({
+    where: {
+      group_id: groupId,
+      ...(startDate && { created_at: { gte: startDate } }),
+    },
+    select: {
+      time: true,
+      group_user: true,
+    },
+  });
+
+  const participantMap = {};
+  records.forEach((ex) => {
+    const id = ex.group_user.participant_id;
+    if (!participantMap[id]) {
+      participantMap[id] = {
+        participantId: id,
+        nickname: ex.group_user.nickname,
+        recordCount: 0,
+        recordTime: 0,
+      };
+    }
+    participantMap[id].recordCount += 1;
+    participantMap[id].recordTime += ex.time;
+  });
+
+  const ranked = Object.values(participantMap).sort(
+    (a, b) => b.recordTime - a.recordTime
+  );
+
+  return ranked;
+};
+
 const transformRecord = (exercise) => {
   return {
     id: exercise.exercise_id,
@@ -199,4 +247,5 @@ const transformRecord = (exercise) => {
 export default {
   createRecord,
   getRecordList,
+  selectRecord,
 };
