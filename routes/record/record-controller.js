@@ -50,8 +50,8 @@ class RecordController {
             }
           }
     */
-    const groupId = parseInt(req.dto.params.groupId, 10);
-    const { page, limit, orderBy, search } = req.dto.query;
+    const groupId = parseInt(req.params.groupId, 10);
+    const { page, limit, orderBy, search } = req.query;
     const { data, total } = await RecordService.getRecordList(groupId, {
       page,
       limit,
@@ -108,8 +108,8 @@ class RecordController {
                 message: "groupId must be integer"
               }}}}
       */
-    const groupId = parseInt(req.dto.params.groupId);
-    const exerciseData = req.dto.body;
+    const groupId = parseInt(req.params.groupId);
+    const exerciseData = req.body;
     const newRecord = await RecordService.createRecord(groupId, exerciseData);
     await getBadges.recordBadges(groupId);
     res.status(201).json(newRecord);
@@ -145,8 +145,8 @@ class RecordController {
                 message: "groupId must be integer"
               }}
     */
-    const group_id = parseInt(req.dto.params.groupId);
-    const day = req.dto.query.duration;
+    const group_id = parseInt(req.params.groupId);
+    const day = req.query.duration;
     const result = await RecordService.selectRecord(group_id, day);
     res.status(200).json(result);
   }
