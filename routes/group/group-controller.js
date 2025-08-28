@@ -62,7 +62,7 @@ class GroupController {
                }}}}
     */
 
-    const newGroup = await GroupService.createGroup(req.dto.body);
+    const newGroup = await GroupService.createGroup(req.body);
     res.status(201).json(newGroup);
   }
 
@@ -136,8 +136,8 @@ class GroupController {
                   message: "Wrong password"
                 }}}}
       */
-    const groupId = parseInt(req.dto.params.groupId);
-    const updatedGroup = await GroupService.updateGroup(groupId, req.dto.body);
+    const groupId = parseInt(req.params.groupId);
+    const updatedGroup = await GroupService.updateGroup(groupId, req.body);
     res.status(200).json(updatedGroup);
   }
 
@@ -179,7 +179,7 @@ class GroupController {
                   message: "Group not found"
                 }}}}
       */
-    const groupId = parseInt(req.dto.params.groupId);
+    const groupId = parseInt(req.params.groupId);
     await GroupService.deleteGroup(groupId);
     res.status(204).send();
   }
@@ -196,7 +196,7 @@ class GroupController {
             example: 1
         }
       */
-    const groupId = parseInt(req.dto.params.groupId);
+    const groupId = parseInt(req.params.groupId);
     const updated = await GroupService.likeGroup(groupId);
     await getBadges.likeBadges(groupId);
     res.status(200).json(updated);
@@ -214,7 +214,7 @@ class GroupController {
               example: 1
           }
       */
-    const groupId = parseInt(req.dto.params.groupId);
+    const groupId = parseInt(req.params.groupId);
     const updated = await GroupService.unlikeGroup(groupId);
     await getBadges.likeBadges(groupId);
     res.status(200).json(updated);
@@ -267,7 +267,7 @@ class GroupController {
                   message: "Group not found"
                 }}}}
     */
-    const groupId = parseInt(req.dto.params.groupId);
+    const groupId = parseInt(req.params.groupId);
     const group = await GroupService.getGroupById(groupId);
     res.status(200).json(group);
   }
@@ -345,7 +345,7 @@ class GroupController {
                 message: "The orderBy parameter must be one of the following values: ['likeCount', 'participantCount', 'createdAt']."}}}}
     */
 
-    const { page, limit, orderBy, search } = req.dto.query;
+    const { page, limit, orderBy, search } = req.query;
     const groups = await GroupService.getGroupList(
       page,
       limit,
