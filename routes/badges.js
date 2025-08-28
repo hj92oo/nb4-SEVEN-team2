@@ -101,8 +101,8 @@ export const recordBadges = async (groupId) => {
   }
 };
 
-// export default {
-//   likeBadges,
-//   participantBadges,
-//   recordBadges,
-// };
+export default {
+  likeBadges,
+  participantBadges,
+  recordBadges,
+};
