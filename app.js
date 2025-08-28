@@ -36,7 +36,10 @@ app.use((req, res, next) => {
 /* cors 로컬 환경에서 프론트와 통신 가능하도록 설정 render에서 사용X
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000', // 로컬 개발용
+      'https://nb4-seven-team2-frontend-47r4.onrender.com', // 배포 프론트
+    ],
     credentials: true,
   })
 );  */
@@ -79,7 +82,11 @@ const swaggerFile = JSON.parse(
 );
 
 // Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile, { explorer: true }));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerFile, { explorer: true })
+);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

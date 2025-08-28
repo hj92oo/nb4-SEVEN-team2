@@ -15,7 +15,7 @@ Notion
 
 ## 팀원 구성
 
-김현정 (팀장) ([개인 Github 링크](https://github.com/hj92oo))
+김현정 ([개인 Github 링크](https://github.com/hj92oo))(팀장) 
 심하원 ([개인 Github 링크](https://github.com/Gypsophila22))
 이봉준 ([개인 Github 링크](https://github.com/LeeBongJun))
 주예찬 ([개인 Github 링크](https://github.com/jooyc135))

@@ -2,7 +2,7 @@ import GroupService from './group-service.js';
 import getBadges from '../badges.js';
 import { PrismaClient } from '@prisma/client';
 
-// 미사용 코드 삭제 // const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 class GroupController {
   async createGroup(req, res) {
@@ -65,9 +65,9 @@ class GroupController {
     const newGroup = await GroupService.createGroup(req.body);
     res.status(201).json(newGroup);
   }
-  
+
   async updateGroup(req, res) {
-      /**     
+    /**     
        * #swagger.tags = ['Groups']
        * #swagger.summary = '그룹 수정'
        * #swagger.parameters['groupId'] = {
@@ -138,11 +138,11 @@ class GroupController {
       */
     const groupId = parseInt(req.params.groupId);
     const updatedGroup = await GroupService.updateGroup(groupId, req.body);
-    res.status(200).json(updatedGroup).send();
+    res.status(200).json(updatedGroup);
   }
 
   async deleteGroup(req, res) {
-      /**     
+    /**     
        * #swagger.tags = ['Groups']
        * #swagger.summary = '그룹 삭제'
        * #swagger.parameters['groupId'] = {
@@ -185,7 +185,7 @@ class GroupController {
   }
 
   async likeGroup(req, res) {
-      /**     
+    /**     
        * #swagger.tags = ['Groups']
        * #swagger.summary = '그룹 추천(좋아요)'
        * #swagger.parameters['groupId'] = {
@@ -203,7 +203,7 @@ class GroupController {
   }
 
   async unlikeGroup(req, res) {
-      /**     
+    /**     
          * #swagger.tags = ['Groups']
          * #swagger.summary = '그룹 추천(좋아요) 취소'
          * #swagger.parameters['groupId'] = {
@@ -271,7 +271,6 @@ class GroupController {
     const group = await GroupService.getGroupById(groupId);
     res.status(200).json(group);
   }
-
 
   async getGroupList(req, res) {
     /**

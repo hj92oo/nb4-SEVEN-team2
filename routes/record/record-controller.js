@@ -4,7 +4,6 @@ import { PrismaClient } from '@prisma/client';
 
 // 미사용 코드 삭제 // const prisma = new PrismaClient();
 
-
 class RecordController {
   async getRecordList(req, res) {
     /**

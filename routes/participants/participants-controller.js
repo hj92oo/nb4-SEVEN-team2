@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 class ParticipantsController {
   async addUser(req, res) {
-     /**     
+    /**     
        * #swagger.tags = ['Participants']
        * #swagger.summary = '그룹 참여'
        * #swagger.parameters['groupId'] = {

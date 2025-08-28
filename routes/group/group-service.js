@@ -26,7 +26,7 @@ const createGroup = async (data) => {
 
 const getGroupList = async (page = 1, limit = 10, orderBy, search) => {
   const safePage = Math.max(1, parseInt(page, 10) || 1);
-  const take = Math.max(1, parseInt(limit, 10) || 10);
+  const take = Math.max(1, parseInt(limit, 10) || 6);
   const skip = (safePage - 1) * take;
 
   let order;

@@ -1,6 +1,3 @@
-
-
-
 export const validateZod =
   (schema, target = 'body') =>
   (req, res, next) => {

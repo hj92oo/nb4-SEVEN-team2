@@ -19,11 +19,11 @@ model Group {
   discord_webhook_url String?
   discord_invite_url  String?
   exercise_count      Int      @default(0)
+  
   likeCount           Int?     @default(0)
   badges              Badges[] @default([])
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
-
   // 반대 필드 추가
   exercises    Exercise[]  @relation("GroupExercises")
   participants GroupUser[]
