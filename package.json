@@ -8,10 +8,10 @@
     "express-validator": "^7.2.1",
     "multer": "^2.0.2",
     "node": "^22.18.0",
-    "zod": "^4.0.17",
     "prisma": "^6.15.0",
     "swagger-autogen": "^2.23.7",
-    "swagger-jsdoc": "^6.2.8"
+    "swagger-jsdoc": "^6.2.8",
+    "zod": "^4.0.17"
   },
   "name": "part2_team2_basic_project",
   "version": "1.0.0",

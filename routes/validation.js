@@ -14,7 +14,7 @@ const DurationEnum = z.enum(['monthly', 'weekly']);
 const createandupdateGroupSchema = z.object({
   name: z.string().min(1, '그룹명은 비워둘 수 없어요.'),
   description: z.string().min(1, '설명은 비워둘 수 없어요.'),
-  photoUrl: z.string().optional(),
+  photoUrl: z.string().nullable().optional(),
   goalRep: z.number().refine((val) => Number.isInteger(val) && val >= 0, {
     message: '목표 횟수가 잘못됐어요!',
   }),
