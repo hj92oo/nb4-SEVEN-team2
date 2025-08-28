@@ -38,12 +38,28 @@ app.use((req, res, next) => {
 });
 
 // CORS 설정
-app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: 'http://localhost:3000',
+//     credentials: true,
+//   })
+// ); 
+const allowedOrigins = [
+  'http://localhost:3000/',
+  'https://nb4-seven-team2-frontend-9jmi.onrender.com/', // 배포된 프론트
+];
+
+app.use(cors({
+  origin: function(origin, callback)
+   {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 app.use(express.json({ limit: '10mb' }));
 
