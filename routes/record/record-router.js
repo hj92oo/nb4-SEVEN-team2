@@ -9,7 +9,7 @@ const router = express.Router();
 
 // 운동 기록 등록, 운동 기록 목록 조회
 router
-  .route('/')
+  .route('/:groupId/records')
   .get(
     validateZod(validation.checkGroupIdSchema, 'params'),
     validateZod(validation.checkPaginationSchema, 'query'),

@@ -137,8 +137,8 @@ class GroupController {
                 }}}}
       */
     const groupId = parseInt(req.params.groupId);
-    const updatedGroup = await GroupService.updateGroup(req.body);
-    res.status(200).json({ groupId, updatedGroup }).send();
+    const updatedGroup = await GroupService.updateGroup(groupId, req.body);
+    res.status(200).json(updatedGroup);
   }
 
   async deleteGroup(req, res) {
