@@ -35,10 +35,7 @@ router
     auth.checkGroupPassword,
     validateRequest,
     GroupController.deleteGroup
-  );
-
-router
-  .route('/:groupId/records')
+  )
   .patch(
     validateZod(validation.createandupdateGroupSchema),
     auth.checkGroupPassword,
