@@ -53,29 +53,30 @@ const allowedOrigins = [
   'https://nb4-seven-team2.onrender.com', // 배포된 프론트
 ];
 
-app.use(cors({
-  // origin: "*"
-  origin: function(origin, callback)
-   {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+// app.use(cors({
+//   origin: function(origin, callback)
+//    {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   credentials: true
+// }));
 
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
 
 app.use(express.json({ limit: '10mb' }));
 
 // ✅ 업로드 폴더 정적 제공
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
-/*app.use('/uploads', express.static(
-    process.env.NODE_ENV === 'production'
-    ? '/tmp/uploads'
-    : path.join(process.cwd(), 'uploads')
-)); */
+
 
 // 라우터 연결
 app.use('/groups', recordRoutes);
