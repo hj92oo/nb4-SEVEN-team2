@@ -47,20 +47,22 @@ app.use(
 
 // CORS 설정
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://nb4-seven-team2.onrender.com', // 배포된 프론트
+const allowedOrigins = ["*"
+  // 'http://localhost:3000',
+  // 'https://nb4-seven-team2.onrender.com', // 배포된 프론트
 ];
 
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
+  origin: "*"
+  // origin: function(origin, callback)
+  //  {
+  //   if (!origin || allowedOrigins.includes(origin)) {
+  //     callback(null, true);
+  //   } else {
+  //     callback(new Error('Not allowed by CORS'));
+  //   }
+  // },
+  // credentials: true
 }));
 
 
