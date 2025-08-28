@@ -77,7 +77,7 @@ const updateGroup = async (groupId, data) => {
   const updatedGroup = await prisma.group.update({
     where: { group_id: groupId },
     data: {
-      group_name: data.group_name,
+      group_name: data.name,
       nickname: data.ownerNickname,
       password: data.ownerPassword,
       description: data.description || null,
