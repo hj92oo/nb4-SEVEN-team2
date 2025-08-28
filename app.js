@@ -12,7 +12,7 @@ import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3001;
 const prisma = new PrismaClient();
 
 console.log('현재 NODE_ENV:', process.env.NODE_ENV);
@@ -55,6 +55,6 @@ app.use('/images', imageRoutes);
 
 app.use(errorHandler);
 
-app.listen(PORT, '0.0.0.0',() => {
+app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
