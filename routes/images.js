@@ -2,34 +2,19 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 // cloudinary storage 추가
-import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
+/*import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';*/
 
 const router = express.Router();
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
 // ✅ multer 저장소 설정
-
-/*const storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'tmp/uploads/'); // 저장 경로
   },
   filename: (req, file, cb) => {
     // 파일 이름: timestamp-원본이름
     cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});*/
-
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: 'uploads',   // Cloudinary에서 저장할 폴더명
-    allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp'],
   },
 });
 
