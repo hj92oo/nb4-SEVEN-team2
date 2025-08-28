@@ -67,12 +67,12 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 
 // ✅ 업로드 폴더 정적 제공
-//app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
-app.use('/uploads', express.static(
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+/*app.use('/uploads', express.static(
     process.env.NODE_ENV === 'production'
     ? '/tmp/uploads'
     : path.join(process.cwd(), 'uploads')
-));
+)); */
 
 // 라우터 연결
 app.use('/groups', recordRoutes);

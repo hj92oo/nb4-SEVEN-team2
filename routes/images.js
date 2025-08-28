@@ -10,7 +10,7 @@ const router = express.Router();
 // ✅ multer 저장소 설정
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'tmp/uploads/'); // 저장 경로
+    cb(null, 'uploads/'); // 저장 경로
   },
   filename: (req, file, cb) => {
     // 파일 이름: timestamp-원본이름
