@@ -38,7 +38,7 @@ router
   );
 
 router
-  .route('/:groupId/record')
+  .route('/:groupId/records')
   .patch(
     validateZod(validation.createandupdateGroupSchema),
     auth.checkGroupPassword,
