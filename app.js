@@ -37,7 +37,7 @@ app.use((req, res, next) => {
   next();
 });
 
-/* cors 로컬 환경에서 프론트와 통신 가능하도록 설정
+/* cors 로컬 환경에서 프론트와 통신 가능하도록 설정 render에서 사용X
 app.use(
   cors({
     origin: 'http://localhost:3000',
