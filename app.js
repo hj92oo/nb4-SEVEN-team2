@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 // CORS 설정
 app.use(
   cors({
-    origin: 'https://nb4-seven-team2-frontend.onrender.com/',
+    origin: 'http://localhost:3000',
     credentials: true,
   })
 );
