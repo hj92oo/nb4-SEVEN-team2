@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 import groupRoutes from './routes/group/group-router.js';
@@ -10,6 +11,7 @@ import errorHandler from './middlewares/errorHandler.js';
 import { body, validationResult } from 'express-validator';
 import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
+import swaggerUi from 'swagger-ui-express';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -54,7 +56,15 @@ app.use('/groups', groupRoutes);
 app.use('/images', imageRoutes);
 
 app.use(errorHandler);
+// Swagger JSON 읽기
+const swaggerFile = JSON.parse(
+  fs.readFileSync(new URL('./swagger/swagger-output.json', import.meta.url))
+);
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile, { explorer: true }));
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Swagger docs: http://localhost:${PORT}/api-docs`);
 });
