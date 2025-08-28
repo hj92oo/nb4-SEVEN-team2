@@ -2,7 +2,7 @@ import RecordService from './record-service.js';
 import getBadges from '../badges.js';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// 미사용 코드 삭제 // const prisma = new PrismaClient();
 
 
 class RecordController {
