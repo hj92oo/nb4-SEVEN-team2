@@ -30,18 +30,21 @@ router
     validateRequest,
     GroupController.getGroupById
   )
-  .patch(
-    validateZod(validation.createandupdateGroupSchema),
-    auth.checkGroupPassword,
-    validateRequest,
-    GroupController.updateGroup
-  )
   .delete(
     validateZod(validation.checkGroupIdSchema, 'params'),
     auth.checkGroupPassword,
     validateRequest,
     GroupController.deleteGroup
   );
+
+router
+  .route('/:groupId/record')
+  .patch(
+    validateZod(validation.createandupdateGroupSchema),
+    auth.checkGroupPassword,
+    validateRequest,
+    GroupController.updateGroup
+  )
 
 // 참여, 참여 취소 라우터
 router

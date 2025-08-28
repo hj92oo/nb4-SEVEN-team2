@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 
   res.on('finish', () => {
     const end = process.hrtime(start);
-    const duration = (end[0] * 1e9 + end[1]) / 1e6;
+    const duration = (zend[0] * 1e9 + end[1]) / 1e6;
 
     console.log(
       `[백엔드] ${req.method} ${req.originalUrl} ${
