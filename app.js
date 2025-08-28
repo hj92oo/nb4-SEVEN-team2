@@ -71,8 +71,8 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 
 // 라우터 연결
-app.use('/groups', groupRoutes);
 app.use('/groups', recordRoutes);
+app.use('/groups', groupRoutes);
 app.use('/images', imageRoutes);
 
 app.use(errorHandler);
