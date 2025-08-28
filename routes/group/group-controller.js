@@ -138,7 +138,7 @@ class GroupController {
       */
     const groupId = parseInt(req.dto.params.groupId);
     const updatedGroup = await GroupService.updateGroup(groupId, req.dto.body);
-    res.status(200).json(updatedGroup);
+    res.status(200).json(updatedGroup).send();
   }
 
   async deleteGroup(req, res) {
