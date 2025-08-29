@@ -1,22 +1,26 @@
 export const validateZod =
-  (schema, target = "body") =>
+  (schema, target = 'body') =>
   (req, res, next) => {
     try {
       const data = req[target];
-      const result = schema.safeParse(data);
-
-      if (!result.success) {
-        const errors = result.error.issues.map((i) => ({
-          path: i.path.join("."),
-          message: i.message,
-          code: i.code,
-        }));
-        return res.status(400).json({ errors });
-      }
-
-      req[target] = result.data;
+      const parsedData = schema.parse(data);
+      if (target === 'body') req.body = parsedData;
       next();
     } catch (e) {
-      next(e);
+      console.error(e);
+
+      if (e.name === 'ZodError' && e.issues) {
+        const errors = e.issues.map((i) => ({
+          path: Array.isArray(i.path) ? i.path.join('.') : i.path,
+          message: i.message,
+        }));
+        return res.status(400).json(errors);
+      }
+
+      return res
+        .status(500)
+        .json([
+          { path: 'server', message: e.message || 'Internal Server Error' },
+        ]);
     }
   };

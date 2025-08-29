@@ -17,7 +17,6 @@ CREATE TABLE "public"."Group" (
     "discord_webhook_url" TEXT,
     "discord_invite_url" TEXT,
     "exercise_count" INTEGER NOT NULL DEFAULT 0,
-    "total" INTEGER,
     "likeCount" INTEGER DEFAULT 0,
     "badges" "public"."Badges"[] DEFAULT ARRAY[]::"public"."Badges"[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -44,9 +43,9 @@ CREATE TABLE "public"."Exercise" (
     "group_user_id" INTEGER NOT NULL,
     "exerciseType" "public"."ExerciseType" NOT NULL,
     "description" VARCHAR(255),
-    "time" INTEGER,
+    "time" INTEGER NOT NULL,
     "distance" INTEGER,
-    "photos" VARCHAR(255),
+    "photos" TEXT[],
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "group_id" INTEGER NOT NULL,
@@ -61,7 +60,7 @@ CREATE UNIQUE INDEX "GroupUser_group_id_nickname_key" ON "public"."GroupUser"("g
 ALTER TABLE "public"."GroupUser" ADD CONSTRAINT "GroupUser_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "public"."Group"("group_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Exercise" ADD CONSTRAINT "Exercise_group_user_id_fkey" FOREIGN KEY ("group_user_id") REFERENCES "public"."GroupUser"("participant_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."Exercise" ADD CONSTRAINT "Exercise_group_user_id_fkey" FOREIGN KEY ("group_user_id") REFERENCES "public"."GroupUser"("participant_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Exercise" ADD CONSTRAINT "Exercise_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "public"."Group"("group_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."Exercise" ADD CONSTRAINT "Exercise_group_id_fkey" FOREIGN KEY ("group_id") REFERENCES "public"."Group"("group_id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1,9 +1,8 @@
 import { PrismaClient } from '@prisma/client';
-import { Badges } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const createGroup = async (data) => {
+const createGroup = async (data) => {
   const newGroup = await prisma.group.create({
     data: {
       group_name: data.name,
@@ -25,23 +24,22 @@ export const createGroup = async (data) => {
   return response;
 };
 
-export const getGroupList = async (
-  offset = 0,
-  limit = 3,
-  order = 'createdAt',
-  search
-) => {
-  let orderBy;
-  switch (order) {
+const getGroupList = async (page = 1, limit = 10, orderBy, search) => {
+  const safePage = Math.max(1, parseInt(page, 10) || 1);
+  const take = Math.max(1, parseInt(limit, 10) || 10);
+  const skip = (safePage - 1) * take;
+
+  let order;
+  switch (orderBy) {
     case 'likeCount':
-      orderBy = { likeCount: 'desc' };
+      order = { likeCount: 'desc' };
       break;
     case 'participantCount':
-      orderBy = { participantCount: 'desc' };
+      order = { participants: { _count: 'desc' } };
       break;
     case 'createdAt':
     default:
-      orderBy = { createdAt: 'desc' };
+      order = { createdAt: 'desc' };
   }
 
   const where = search
@@ -52,20 +50,19 @@ export const getGroupList = async (
 
   const groups = await prisma.group.findMany({
     where,
-    orderBy,
-    skip: Number(offset),
-    take: Number(limit),
+    orderBy: order,
+    skip,
+    take,
     include: {
       participants: true,
     },
   });
-
+  const total = await prisma.group.count({ where });
   const response = groups.map(transformGroup);
-
-  return response;
+  return { data: response, total };
 };
 
-export const getGroupById = async (groupId) => {
+const getGroupById = async (groupId) => {
   const group = await prisma.group.findUniqueOrThrow({
     where: { group_id: groupId },
     include: {
@@ -76,7 +73,7 @@ export const getGroupById = async (groupId) => {
   return response;
 };
 
-export const updateGroup = async (groupId, data) => {
+const updateGroup = async (groupId, data) => {
   const updatedGroup = await prisma.group.update({
     where: { group_id: groupId },
     data: {
@@ -91,16 +88,17 @@ export const updateGroup = async (groupId, data) => {
       tags: data.tags || [],
     },
   });
-  return updatedGroup;
+  const transformedGroup = transformGroup(updatedGroup);
+  return transformedGroup;
 };
 
-export const deleteGroup = async (groupId) => {
+const deleteGroup = async (groupId) => {
   await prisma.group.delete({
     where: { group_id: groupId },
   });
 };
 
-export const likeGroup = async (groupId) => {
+const likeGroup = async (groupId) => {
   const incremented = await prisma.group.update({
     where: { group_id: groupId },
     data: { likeCount: { increment: 1 } },
@@ -108,70 +106,27 @@ export const likeGroup = async (groupId) => {
   return incremented;
 };
 
-export const unlikeGroup = async (groupId) => {
-  const decremented = await prisma.group.update({
-    where: { group_id: groupId },
-    data: { likeCount: { decrement: 1 } },
+const unlikeGroup = async (groupId) => {
+  const decremented = await prisma.$transaction(async (tx) => {
+    const group = await tx.group.findUnique({
+      where: { group_id: groupId },
+      select: { likeCount: true },
+    });
+
+    if (group && group.likeCount > 0) {
+      return await tx.group.update({
+        where: { group_id: groupId },
+        data: { likeCount: { decrement: 1 } },
+      });
+    }
+
+    return group;
   });
+
   return decremented;
 };
 
-export const checkAndAwardBadges = async (groupId) => {
-  const group = await prisma.group.findUnique({
-    where: { group_id: groupId },
-  });
-  // 추천
-  if (group.likeCount >= 100 && !group.badges.includes(Badges.LIKE_100)) {
-    await prisma.group.update({
-      where: { group_id: groupId },
-      data: {
-        badges: {
-          push: Badges.LIKE_100,
-        },
-      },
-    });
-  } else if (group.likeCount < 100 && group.badges.includes(Badges.LIKE_100)) {
-    await prisma.group.update({
-      where: { group_id: groupId },
-      data: {
-        badges: {
-          // 뱃지 제거
-          set: group.badges.filter((badge) => badge !== Badges.LIKE_100),
-        },
-      },
-    });
-  }
-  // // 참여자
-  // const participantCount = await prisma.groupUser.count({
-  //   where: { group_id: groupId },
-  // })
-  // if ( participantCount >= 10 && !group.badges.includes(Badges.PARTICIPATION_10)){
-  //   await prisma.group.update({
-  //     where: { group_id: groupId },
-  //     data: {
-  //       badges: {
-  //         push: Badges.PARTICIPATION_10,
-  //       },
-  //     },
-  //   });
-  // }
-  // // 운동 기록
-  // const recordCount = await prisma.group.count({
-  //   where: { group_id: groupId },
-  // })
-  // if ( recordCount >= 1 && !group.badges.includes(Badges.RECORD_100)){
-  //   await prisma.group.update({
-  //     where: { group_id: groupId },
-  //     data: {
-  //       badges: {
-  //         push: Badges.RECORD_100,
-  //       },
-  //     },
-  //   });
-  // }
-};
-
-function transformGroup(group) {
+const transformGroup = (group) => {
   return {
     id: group.group_id,
     name: group.group_name,
@@ -182,7 +137,7 @@ function transformGroup(group) {
     discordInviteUrl: group.discord_invite_url,
     owner: {
       nickname: group.nickname,
-      id: group.nickname,
+      id: group.participant_id,
       createdAt: group.createdAt,
       updatedAt: group.updatedAt,
     },
@@ -190,11 +145,11 @@ function transformGroup(group) {
     tags: group.tags,
     participants: group.participants ?? [],
     badges: group.badges,
-    recordCount: group.recommendation_count,
     createdAt: group.createdAt,
     updatedAt: group.updatedAt,
+    recordCount: group.exercise_count,
   };
-}
+};
 
 export default {
   createGroup,
@@ -204,5 +159,4 @@ export default {
   unlikeGroup,
   getGroupList,
   getGroupById,
-  checkAndAwardBadges,
 };

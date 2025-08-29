@@ -19,6 +19,32 @@ const upload = multer({ storage });
 
 // ✅ 이미지 업로드 라우터
 router.post('/', upload.array('files'), (req, res) => {
+  /**     
+ * #swagger.tags = ['Images']
+ * #swagger.summary = '이미지 파일 업로드'
+ * #swagger.consumes = ['multipart/form-data']
+ * #swagger.parameters['files'] = {
+      in: 'formData',
+      description: '업로드할 이미지 파일 (여러 개 가능)',
+      required: true,
+      type: 'array',
+      items: { type: 'string', format: 'binary' }
+   }
+ * #swagger.responses[200] = {
+      description: "업로드 성공",
+      content: {"application/json": {
+          example: {
+            urls: ["string"]
+          }}}}
+ * #swagger.responses[400] = {
+      description: "잘못된 요청 (이미지 파일 아님)",
+      content: {"application/json": {
+          example: {
+            message: "File should be an image file"
+          }}}}
+ */
+
+
   try {
     const files = req.files;
     if (!files || files.length === 0) {
