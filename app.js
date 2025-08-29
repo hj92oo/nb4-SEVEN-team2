@@ -38,7 +38,7 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000', // 로컬 개발용
-      'https://nb4-seven-team2-frontend-47r4.onrender.com', // 배포 프론트
+      'https://nb4-seven-team2-backend.onrender.com/', // 배포 프론트
     ],
     credentials: true,
   })
