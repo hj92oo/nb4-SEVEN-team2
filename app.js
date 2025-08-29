@@ -34,15 +34,22 @@ app.use((req, res, next) => {
 });
 
 // CORS 설정
-app.use(
-  cors({
-    origin: [
-      'http://localhost:3000', // 로컬 개발용
-      'https://nb4-seven-team2-backend.onrender.com/', // 배포 프론트
-    ],
-    credentials: true,
-  })
-);
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://nb4-seven-team2.onrender.com', // 배포된 프론트
+];
+
+app.use(cors({
+  origin: function(origin, callback)
+   {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 app.use(express.json({ limit: '10mb' }));
 
