@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3001"
+      "url": "https://nb4-seven-team2-backend.onrender.com"
     }
   ],
   "paths": {
