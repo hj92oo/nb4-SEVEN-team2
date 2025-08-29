@@ -113,6 +113,7 @@ README.md
 
 (개발한 홈페이지에 대한 링크 게시)
 
-## 프로젝트 회고록
+https://nb4-seven-team2.onrender.com
 
 (제작한 발표자료 링크 혹은 첨부파일 첨부)
+https://docs.google.com/presentation/d/1H4yZnROLlWrJ_O2ScT3tV8EVHkbagUx0/edit?usp=drive_link&ouid=104636802105058906160&rtpof=true&sd=true

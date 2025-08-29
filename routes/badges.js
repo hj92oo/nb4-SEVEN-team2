@@ -4,7 +4,7 @@ import { set } from 'zod';
 const prisma = new PrismaClient();
 
 // 1. 좋아요 100개 이상 시, 배지 획득 코드
-export const likeBadges = async (groupId) => {
+const likeBadges = async (groupId) => {
   const group = await prisma.group.findUnique({
     where: { group_id: groupId },
   });
@@ -32,7 +32,7 @@ export const likeBadges = async (groupId) => {
 };
 
 // 2. 참여자 10명 이상 시, 배지 획득 코드
-export const participantBadges = async (groupId) => {
+const participantBadges = async (groupId) => {
   const group = await prisma.group.findUnique({
     where: { group_id: groupId },
   });
@@ -71,7 +71,7 @@ export const participantBadges = async (groupId) => {
 };
 
 //3. 운동 기록 100개 이상 시, 배지 획득 코드
-export const recordBadges = async (groupId) => {
+const recordBadges = async (groupId) => {
   const group = await prisma.group.findUnique({
     where: { group_id: groupId },
   });
