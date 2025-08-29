@@ -1,9 +1,9 @@
 import swaggerAutogen from 'swagger-autogen';
 
-const swagger = swaggerAutogen({ 
+const swagger = swaggerAutogen({
   openapi: '3.0.0',
   autoBody: false,
-  autoExample: false
+  autoExample: false,
 });
 
 const outputFile = 'swagger/swagger-output.json';
@@ -14,9 +14,7 @@ const doc = {
     title: 'SEVEN API By Team2',
     description: 'SEVEN API 명세서 Swagger 문서화',
   },
-  servers: [
-    { url: 'http://localhost:3001'}
-  ],
+  servers: [{ url: 'https://nb4-seven-team2-backend-fgxe.onrender.com' }],
   securityDefinitions: {
     bearerAuth: {
       type: 'http',
@@ -27,7 +25,7 @@ const doc = {
   },
 };
 
-console.log(endpointsFiles)
+console.log(endpointsFiles);
 
 swagger(outputFile, endpointsFiles, doc).then(() => {
   console.log('Swagger JSON 생성 완료!');
