@@ -15,7 +15,7 @@ const doc = {
     description: 'SEVEN API 명세서 Swagger 문서화',
   },
   servers: [
-    { url: 'http://localhost:3001'}
+    { url: 'https://nb4-seven-team2-backend.onrender.com'}
   ],
   securityDefinitions: {
     bearerAuth: {
